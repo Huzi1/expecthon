@@ -7,27 +7,29 @@ def expect(assumption: Union[AssumptionResult, BaseAssumption]) -> None:
     """
     Expect the assumption to be true - raises AssertionError otherwise
     """
-    raise_if_wrong_type(assumption)
+    _raise_if_wrong_type(assumption)
 
-    raise_if_assumption_failed(assumption)
+    _raise_if_assumption_failed(assumption)
 
 
-def raise_if_wrong_type(assumption: Union[AssumptionResult, BaseAssumption]) -> None:
+def _raise_if_wrong_type(assumption: Union[AssumptionResult, BaseAssumption]) -> None:
     if not isinstance(assumption, (AssumptionResult, BaseAssumption)):
         raise ValueError(f"{assumption} is the wrong type {type(assumption)}")
 
 
-def raise_if_assumption_failed(assumption: Union[AssumptionResult, BaseAssumption]):
+def _raise_if_assumption_failed(assumption: Union[AssumptionResult, BaseAssumption]):
     if isinstance(assumption, BaseAssumption):
         assumption = assumption._result
 
     if not assumption.success:
-        raise AssertionError(format_error_messages(assumption.error_messages))
+        raise AssertionError(_format_error_messages(assumption.error_messages))
 
 
-def format_error_messages(error_messages: List[str]) -> str:
+def _format_error_messages(error_messages: List[str]) -> str:
     if len(error_messages) == 1:
         return error_messages[0]
-    indent = "4"
+    indent = "  "
     sep = f"\n{indent} - "
-    return sep + (sep.join(str(p) for p in error_messages))
+    return (
+        "Following errors occurred:" + sep + (sep.join(str(p) for p in error_messages))
+    )
