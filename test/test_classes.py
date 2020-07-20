@@ -32,9 +32,10 @@ class AssumptionResultTestCase(unittest.TestCase):
             expect(that_assumption_result(result).is_successful())
         with self.subTest("first fail, second succeed"):
             result = fail_result() & empty()
-            expect(that_assumption_result(result).is_not_successful()
-                   & that_list_of(result.error_messages).has_length(1)
-                   )
+            expect(
+                that_assumption_result(result).is_not_successful()
+                & that_list_of(result.error_messages).has_length(1)
+            )
         with self.subTest("first succeed, second fail"):
             result = empty() & fail_result()
             expect(
