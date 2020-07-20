@@ -1,4 +1,4 @@
-# expecthon
+# Expecthon
 
 python spec testing framework. This aims to help make tests as readable as
 possible, by composing your tests in natural language.
@@ -35,6 +35,8 @@ expect(
 )
 ```
 
+
+## Personal tips
 
 If Django is installed then you can utilize the following bindings:
 
