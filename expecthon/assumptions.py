@@ -9,9 +9,7 @@ def that(value: Any) -> BaseAssumption:
     return BaseAssumption(value)
 
 
-class ListAssumption(BaseAssumption):
-    ValueType = List[Any]
-
+class ListAssumption(BaseAssumption[List[Any]]):
     def _copy_with_added_result(self, new_result: AssumptionResult) -> "ListAssumption":
         return ListAssumption(self._value, new_result & self._result)
 
@@ -19,6 +17,7 @@ class ListAssumption(BaseAssumption):
         return self._copy_with_added_result(
             assuming(len(self._value) == 0).else_report(f"{self._value} is not empty")
         )
+
     def is_not_empty(self) -> "ListAssumption":
         return self._copy_with_added_result(
             assuming(len(self._value) != 0).else_report(f"{self._value} is empty")

@@ -3,13 +3,10 @@
 Tests the core classes for the underlying system
 """
 import unittest
-from expecthon import (
-    AssumptionResult,
-    expect,
-    that,
-    that_list_of,
-    BaseAssumption,
-)
+
+from expecthon import expect
+
+from .assumptions import empty, failed, that_result
 
 
 class AssumptionResultTestCase(unittest.TestCase):
@@ -21,74 +18,33 @@ class AssumptionResultTestCase(unittest.TestCase):
         """
         Test the `AssumptionResult.empty()` function
         """
-        expect(that_assumption_result(empty()).is_successful())
+        expect(that_result(empty()).is_successful())
 
     def test_and(self):
         """
         Test the bitwise `&` operator which concats two results
         """
+
         with self.subTest("Both successful"):
-            result = empty() & empty()
-            expect(that_assumption_result(result).is_successful())
+            expect(that_result(empty() & empty()).is_successful())
+
         with self.subTest("first fail, second succeed"):
-            result = fail_result() & empty()
-            expect(
-                that_assumption_result(result).is_not_successful()
-                & that_list_of(result.error_messages).has_length(1)
-            )
+            expect(that_result(failed() & empty()).has_failure_count_of(1))
+
         with self.subTest("first succeed, second fail"):
-            result = empty() & fail_result()
-            expect(
-                that_assumption_result(result).is_not_successful()
-                & that_list_of(result.error_messages).has_length(1)
-            )
+            expect(that_result(empty() & failed()).has_failure_count_of(1))
+
         with self.subTest("two fail"):
-            result = fail_result() & fail_result()
-            expect(
-                that_assumption_result(result).is_not_successful()
-                & that_list_of(result.error_messages).has_length(2)
-            )
-            with self.subTest("three chained"):
-                with self.subTest("combined first"):
-                    combined_result = result & fail_result()
-                    expect(
-                        that_assumption_result(combined_result).is_not_successful()
-                        & that_list_of(combined_result.error_messages).has_length(3)
-                    )
-                with self.subTest("combined last"):
-                    combined_result = fail_result() & result
-                    expect(
-                        that_assumption_result(combined_result).is_not_successful()
-                        & that_list_of(combined_result.error_messages).has_length(3)
-                    )
+            expect(that_result(failed() & failed()).has_failure_count_of(2))
 
+    def test_and_chaining(self):
+        """
+        checking associative law `(A & B) & C` == `A & (B & C)`
+        """
+        with self.subTest("combined first"):
+            result = (failed() & failed()) & failed()
+            expect(that_result(result).has_failure_count_of(3))
 
-class AssumptionResultAssumption(BaseAssumption):
-    # TODO find out how to override type
-    ValueType = AssumptionResult
-
-    def is_successful(self) -> "AssumptionResult":
-        return (
-            that(self._value).is_type(AssumptionResult)
-            & that_list_of(self._value.error_messages).is_empty()
-            & that(self._value.success).is_true()
-        )
-
-    def is_not_successful(self) -> "AssumptionResult":
-        return (
-            that(self._value).is_type(AssumptionResult)
-            & that_list_of(self._value.error_messages).is_not_empty()
-            & that(self._value.success).is_false()
-        )
-
-
-def that_assumption_result(result: AssumptionResult) -> AssumptionResultAssumption:
-    return AssumptionResultAssumption(result)
-
-
-def empty():
-    return AssumptionResult.empty()
-
-
-def fail_result():
-    return AssumptionResult(["failed"])
+        with self.subTest("combined last"):
+            result = failed() & (failed() & failed())
+            expect(that_result(result).has_failure_count_of(3))

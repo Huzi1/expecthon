@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from typing import TypeVar, Union, Optional, List
+from typing import TypeVar, Union, Optional, List, Generic
 from dataclasses import dataclass
 
 
@@ -73,7 +73,7 @@ def assuming(clause: bool) -> AssumptionResultBuilder:
 T = TypeVar("T")
 
 
-class BaseAssumption:
+class BaseAssumption(Generic[T]):
     """
     Used to create AssumptionResults, which is the basis for any test
 
@@ -81,39 +81,35 @@ class BaseAssumption:
     which in turn returns a AssumptionResult, which shows all the failed assumptions.
     """
 
-    ValueType = TypeVar("ValueType")
-
-    def __init__(
-        self, value: ValueType, assumption_result: Optional[AssumptionResult] = None
-    ):
+    def __init__(self, value: T, assumption_result: Optional[AssumptionResult] = None):
         self._value = value
         self._result = assumption_result_or_empty(assumption_result)
 
     def _copy_with_added_result(self, new_result: AssumptionResult) -> "BaseAssumption":
         return BaseAssumption(self._value, new_result & self._result)
 
-    def equals(self, expected_value: ValueType) -> "BaseAssumption":
+    def equals(self, expected_value: T) -> "BaseAssumption":
         return self._copy_with_added_result(
             assuming(self._value == expected_value).else_report(
                 f"{self._value} should equal {expected_value}"
             )
         )
 
-    def doesnt_equals(self, expected_value: ValueType) -> "BaseAssumption":
+    def doesnt_equals(self, expected_value: T) -> "BaseAssumption":
         return self._copy_with_added_result(
             assuming(self._value == expected_value).else_report(
                 f"{self._value} shouldn't equal {expected_value}"
             )
         )
 
-    def is_(self, expected_value: ValueType) -> "BaseAssumption":
+    def is_(self, expected_value: T) -> "BaseAssumption":
         return self._copy_with_added_result(
             assuming(self._value is expected_value).else_report(
                 f"{self._value} should be {expected_value}"
             )
         )
 
-    def is_not(self, expected_value: ValueType) -> "BaseAssumption":
+    def is_not(self, expected_value: T) -> "BaseAssumption":
         return self._copy_with_added_result(
             assuming(self._value is not expected_value).else_report(
                 f"{self._value} should be {expected_value}"
