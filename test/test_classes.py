@@ -12,37 +12,6 @@ from expecthon import (
 )
 
 
-class AssumptionResultAssumption(BaseAssumption):
-    # TODO find out how to override type
-    ValueType = AssumptionResult
-
-    def is_successful(self) -> "AssumptionResult":
-        return (
-            that(self._value).is_type(AssumptionResult)
-            & that_list_of(self._value.error_messages).is_empty()
-            & that(self._value.success).is_true()
-        )
-
-    def is_not_successful(self) -> "AssumptionResult":
-        return (
-            that(self._value).is_type(AssumptionResult)
-            & that_list_of(self._value.error_messages).is_not_empty()
-            & that(self._value.success).is_false()
-        )
-
-
-def that_assumption_result(result: AssumptionResult) -> AssumptionResultAssumption:
-    return AssumptionResultAssumption(result)
-
-
-def empty():
-    return AssumptionResult.empty()
-
-
-def fail_result():
-    return AssumptionResult(["failed"])
-
-
 class AssumptionResultTestCase(unittest.TestCase):
     """
     Test all operations on the AssumptionResult class
@@ -91,3 +60,34 @@ class AssumptionResultTestCase(unittest.TestCase):
                         that_assumption_result(combined_result).is_not_successful()
                         & that_list_of(combined_result.error_messages).has_length(3)
                     )
+
+
+class AssumptionResultAssumption(BaseAssumption):
+    # TODO find out how to override type
+    ValueType = AssumptionResult
+
+    def is_successful(self) -> "AssumptionResult":
+        return (
+            that(self._value).is_type(AssumptionResult)
+            & that_list_of(self._value.error_messages).is_empty()
+            & that(self._value.success).is_true()
+        )
+
+    def is_not_successful(self) -> "AssumptionResult":
+        return (
+            that(self._value).is_type(AssumptionResult)
+            & that_list_of(self._value.error_messages).is_not_empty()
+            & that(self._value.success).is_false()
+        )
+
+
+def that_assumption_result(result: AssumptionResult) -> AssumptionResultAssumption:
+    return AssumptionResultAssumption(result)
+
+
+def empty():
+    return AssumptionResult.empty()
+
+
+def fail_result():
+    return AssumptionResult(["failed"])
