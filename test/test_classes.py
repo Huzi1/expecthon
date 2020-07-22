@@ -4,8 +4,7 @@ Tests the core classes for the underlying system
 """
 import unittest
 
-from expecthon import expect
-from expecthon.case import case
+from expecthon import expect, case
 
 from .assumptions import empty, failed, that_result
 
