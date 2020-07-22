@@ -2,6 +2,10 @@
 
 from expecthon import AssumptionResult, BaseAssumption, that, that_list_of
 
+__all__ = [
+    "AssumptionResultAssumption", "that_result", "empty", "failed"
+]
+
 
 class AssumptionResultAssumption(BaseAssumption[AssumptionResult]):
     # TODO find out how to override type
@@ -30,9 +34,9 @@ def that_result(result: AssumptionResult) -> AssumptionResultAssumption:
     return AssumptionResultAssumption(result)
 
 
-def empty():
+def empty() -> AssumptionResult:
     return AssumptionResult.empty()
 
 
-def failed():
+def failed() -> AssumptionResult:
     return AssumptionResult(["failed"])

@@ -31,5 +31,5 @@ class ListAssumption(BaseAssumption[List[Any]]):
         )
 
 
-def that_list_of(value: Any) -> ListAssumption:
+def that_list_of(value: List[Any]) -> ListAssumption:
     return ListAssumption(value)
