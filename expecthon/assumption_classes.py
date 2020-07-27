@@ -60,6 +60,14 @@ class AssumptionResultBuilder:
         return AssumptionResult([error_message] if not self._clause else [])
 
 
+def failed_test(error_message: str) -> AssumptionResult:
+    return AssumptionResult([error_message])
+
+
+def success() -> AssumptionResult:
+    return AssumptionResult([])
+
+
 def assuming(clause: bool) -> AssumptionResultBuilder:
     """
     Returns a builder for AssumptionResults for fluent interfaces.

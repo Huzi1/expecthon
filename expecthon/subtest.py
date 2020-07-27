@@ -2,5 +2,5 @@
 import unittest
 
 
-def case(msg:str) -> unittest.subTest:
+def case(msg: str) -> unittest.subTest:
     return unittest.subTesti

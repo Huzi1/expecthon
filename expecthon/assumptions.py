@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # TODO add comments
 
-from typing import Any, List
-from .assumption_classes import BaseAssumption, AssumptionResult, assuming
+from typing import Any, List, Callable
+from .assumption_classes import BaseAssumption, AssumptionResult, assuming, failed_test
 
 
 def that(value: Any) -> BaseAssumption:
@@ -31,5 +31,25 @@ class ListAssumption(BaseAssumption[List[Any]]):
         )
 
 
+class FunctionAssumption(BaseAssumption[Callable[[], Any]]):
+    def fails_with(self, expected_exception: Exception) -> "FunctionAssumption":
+        try:
+            self._value()
+            return self._copy_with_added_result(
+                failed_test(f"function should have failed with {expected_exception}")
+            )
+        except Exception as exception:
+            return self._copy_with_added_result(
+                assuming(type(exception) is expected_exception).else_report(
+                    "Wrong exception raised -"
+                    f" expected {expected_exception}, but got {type(exception)}"
+                )
+            )
+
+
 def that_list_of(value: List[Any]) -> ListAssumption:
     return ListAssumption(value)
+
+
+def that_function(value: Callable[[], Any]) -> FunctionAssumption:
+    return FunctionAssumption(value)

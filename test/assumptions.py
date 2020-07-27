@@ -2,9 +2,7 @@
 
 from expecthon import AssumptionResult, BaseAssumption, that, that_list_of
 
-__all__ = [
-    "AssumptionResultAssumption", "that_result", "empty", "failed"
-]
+__all__ = ["AssumptionResultAssumption", "that_result", "empty", "failed"]
 
 
 class AssumptionResultAssumption(BaseAssumption[AssumptionResult]):
