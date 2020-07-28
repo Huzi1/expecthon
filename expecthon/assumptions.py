@@ -30,8 +30,20 @@ class ListAssumption(BaseAssumption[List[Any]]):
             )
         )
 
+    def contains(self, expected_value: Any) -> "ListAssumption":
+        return self._copy_with_added_result(
+            assuming(expected_value in self._value).else_report(
+                f"{self._value} doesn't contain ´{expected_value}´"
+            )
+        )
+
 
 class FunctionAssumption(BaseAssumption[Callable[[], Any]]):
+
+    # TODO find a way where we don't have to repeat this
+    def _copy_with_added_result(self, new_result: AssumptionResult) -> "ListAssumption":
+        return ListAssumption(self._value, new_result & self._result)
+
     def fails_with(self, expected_exception: Exception) -> "FunctionAssumption":
         try:
             self._value()

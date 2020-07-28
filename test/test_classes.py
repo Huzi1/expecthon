@@ -4,14 +4,15 @@ Tests the core classes for the underlying system
 """
 import unittest
 
-from expecthon import expect, case
+from expecthon import expect, case, failed_test, success, assuming, that
+from expecthon.assumption_classes import AssumptionResultBuilder
 
 from .assumptions import empty, failed, that_result
 
 
 class AssumptionResultTestCase(unittest.TestCase):
     """
-    Test all operations on the AssumptionResult class
+    Test all operations and helpers related to the AssumptionResult class
     """
 
     def test_empty(self):
@@ -48,3 +49,48 @@ class AssumptionResultTestCase(unittest.TestCase):
         with case("combined last"):
             result = failed() & (failed() & failed())
             expect(that_result(result).has_failure_count_of(3))
+
+    def test_success(self):
+        """
+        test the `failed_test` helper function
+        """
+        expect(that_result(success()).is_successful())
+
+    def test_failed_test(self):
+        """
+        test the `failed_test` helper function
+        """
+        error_msg = "fail"
+        expect(
+            that_result(failed_test(error_msg))
+            .has_failure_count_of(1)
+            .and_()
+            .where_error_messages()
+            .contains(error_msg)
+        )
+
+
+class AssumptionResultBuilderTestCase(unittest.TestCase):
+    """
+    Test all helpers and operations of the AssumptionResultBuilder
+    """
+
+    def test_assuming(self):
+        """
+        test the `assuming` helper function
+        """
+
+        error_msg = "fail"
+        with case("returns Builder True"):
+            expect(that(assuming(True)).is_type(AssumptionResultBuilder))
+        with case("or_else is empty if clause is True"):
+            expect(that_result(assuming(True).else_report(error_msg)).is_successful())
+
+        with case("or_else is not empty if clause is False"):
+            expect(
+                that_result(assuming(False).else_report(error_msg))
+                .has_failure_count_of(1)
+                .and_()
+                .where_error_messages()
+                .contains(error_msg)
+            )

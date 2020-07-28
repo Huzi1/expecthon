@@ -93,8 +93,10 @@ class BaseAssumption(Generic[T]):
         self._value = value
         self._result = assumption_result_or_empty(assumption_result)
 
-    def _copy_with_added_result(self, new_result: AssumptionResult) -> "BaseAssumption":
-        return BaseAssumption(self._value, new_result & self._result)
+    def _copy_with_added_result(
+        self, new_result: AssumptionResult
+    ) -> "BaseAssumption[T]":
+        return type(self)(self._value, new_result & self._result)
 
     def equals(self, expected_value: T) -> "BaseAssumption":
         return self._copy_with_added_result(
@@ -142,6 +144,9 @@ class BaseAssumption(Generic[T]):
                 f"{self._value} is not instance of {expected_type}"
             )
         )
+
+    def and_(self) -> "BaseAssumption":
+        return self
 
     def __and__(
         self, other: Union["BaseAssumption", AssumptionResult, None]
