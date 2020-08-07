@@ -22,6 +22,7 @@ def _raise_if_assumption_failed(assumption: Union[AssumptionResult, BaseAssumpti
         assumption = assumption._result
 
     if not assumption.success:
+        # TODO change the stacktrace to only point at the `expect` line
         raise AssertionError(_format_error_messages(assumption.error_messages))
 
 

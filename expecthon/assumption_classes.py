@@ -98,6 +98,12 @@ class BaseAssumption(Generic[T]):
     ) -> "BaseAssumption[T]":
         return type(self)(self._value, new_result & self._result)
 
+    def _copy(self) -> "BaseAssumption[T]":
+        return type(self)(self._value, self._result)
+
+    def result(self) -> AssumptionResult:
+        return self._result
+
     def equals(self, expected_value: T) -> "BaseAssumption":
         return self._copy_with_added_result(
             assuming(self._value == expected_value).else_report(

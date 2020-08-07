@@ -6,8 +6,18 @@ These are all written by creating simple tests that should succeed or fail
 and then running them.
 """
 
-from expecthon import expect, case, failed_test, success, assuming, that, that_function
+from expecthon import (
+    expect,
+    case,
+    failed_test,
+    success,
+    assuming,
+    that,
+    that_function,
+    that_list_of,
+)
 from expecthon.assumption_classes import BaseAssumption
+from .assumptions import that_assumption
 import unittest
 
 
@@ -20,25 +30,50 @@ class BaseAssumptionTestCase(unittest.TestCase):
         expect(that(that(None)).is_type(BaseAssumption))
 
     def test_equals(self):
-        expect(that(5+5).equals(10))
+        expect(that_assumption(that(5 + 5).equals).with_arguments(10).succeeds())
 
     def test_is_type(self):
-        expect(that(5+5).is_type(int))
+        expect(that(5 + 5).is_type(int))
 
     def test_is_true(self):
         with case("positive test"):
-            expect(that(True).is_true())
+            expect(that_assumption(that(True).is_true).succeeds())
         with case("negative test"):
-            def expect_that_false_is_true():
-                expect(that(False).is_true())
-
-            expect(that_function(expect_that_false_is_true).fails_with(AssertionError))
+            expect(that_assumption(that(False).is_true).fails())
 
     def test_is_false(self):
         with case("positive test"):
-            expect(that([]).is_false())
+            expect(that_assumption(that(False).is_false).succeeds())
         with case("negative test"):
-            def expect_that_true_is_false():
-                expect(that(True).is_false())
+            expect(that_assumption(that(True).is_false).fails())
 
-            expect(that_function(expect_that_true_is_false).fails_with(AssertionError))
+
+class ListAssumptionTestCase(unittest.TestCase):
+    """
+    Tests regarding the `ListAssumption` `that_list_of`
+    """
+
+    def test_is_empty(self):
+        with case("positive test"):
+            expect(that_assumption(that_list_of([]).is_empty).succeeds())
+        with case("negative test"):
+            expect(that_assumption(that_list_of([1]).is_empty).fails())
+
+    def test_is_not_empty(self):
+        with case("positive test"):
+            expect(that_assumption(that_list_of([1]).is_not_empty).succeeds())
+        with case("negative test"):
+            expect(that_assumption(that_list_of([]).is_not_empty).fails())
+
+    def test_has_length(self):
+        for i in range(0, 10):
+            with case(f"positive test (with length={i})"):
+                expect(
+                    that_assumption(that_list_of([i] * i).has_length)
+                    .with_arguments(i)
+                    .succeeds()
+                )
+        with case("negative test"):
+            expect(
+                that_assumption(that_list_of([1]).has_length).with_arguments(2).fails()
+            )

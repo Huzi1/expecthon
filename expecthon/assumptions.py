@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # TODO add comments
-
-from typing import Any, List, Callable
+import decimal
+from typing import Any, List, Callable, Type, Union
 from .assumption_classes import BaseAssumption, AssumptionResult, assuming, failed_test
 
 
@@ -37,14 +37,28 @@ class ListAssumption(BaseAssumption[List[Any]]):
             )
         )
 
+    def has_any(self, assumer: BaseAssumption[Any]) -> "ListAssumption":
+        raise NotImplementedError()
+
+
+class DecimalAssumption(BaseAssumption[decimal.Decimal]):
+    def _copy_with_added_result(
+        self, new_result: AssumptionResult
+    ) -> "DecimalAssumption":
+        return DecimalAssumption(self._value, new_result & self._result)
+
 
 class FunctionAssumption(BaseAssumption[Callable[[], Any]]):
 
     # TODO find a way where we don't have to repeat this
-    def _copy_with_added_result(self, new_result: AssumptionResult) -> "ListAssumption":
-        return ListAssumption(self._value, new_result & self._result)
+    def _copy_with_added_result(
+        self, new_result: AssumptionResult
+    ) -> "FunctionAssumption":
+        return FunctionAssumption(self._value, new_result & self._result)
 
-    def fails_with(self, expected_exception: Exception) -> "FunctionAssumption":
+    def fails_with(
+        self, expected_exception: Union[Exception, Type[Exception]]
+    ) -> "FunctionAssumption":
         try:
             self._value()
             return self._copy_with_added_result(
@@ -56,6 +70,16 @@ class FunctionAssumption(BaseAssumption[Callable[[], Any]]):
                     "Wrong exception raised -"
                     f" expected {expected_exception}, but got {type(exception)}"
                 )
+            )
+
+    def succeeds(self) -> "FunctionAssumption":
+        try:
+            self._value()
+            return self._copy()
+        except Exception as exception:
+            raise exception
+            return self._copy_with_added_result(
+                failed_test(f"function should have succeeded (failed with {exception})")
             )
 
 
