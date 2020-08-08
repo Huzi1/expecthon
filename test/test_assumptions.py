@@ -30,10 +30,16 @@ class BaseAssumptionTestCase(unittest.TestCase):
         expect(that(that(None)).is_type(BaseAssumption))
 
     def test_equals(self):
-        expect(that_assumption(that(5 + 5).equals).with_arguments(10).succeeds())
+        with case("positive test"):
+            expect(that_assumption(that(5 + 5).equals).with_arguments(10).succeeds())
+        with case("negative test"):
+            expect(that_assumption(that(5 + 1).equals).with_arguments(10).fails())
 
     def test_is_type(self):
-        expect(that(5 + 5).is_type(int))
+        with case("positive test"):
+            expect(that_assumption(that(5).is_type).with_arguments(int).succeeds())
+        with case("negative test"):
+            expect(that_assumption(that("5").is_type).with_arguments(int).fails())
 
     def test_is_true(self):
         with case("positive test"):
