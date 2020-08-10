@@ -39,5 +39,6 @@ __all__ = [
     "that",
     "that_list",
     "that_function",
-    "that_string" "that_number",
+    "that_string",
+    "that_number",
 ]

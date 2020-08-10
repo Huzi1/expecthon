@@ -3,7 +3,7 @@
 
 import unittest
 
-from expecthon import expect, failed,  that_string
+from expecthon import expect, failed, that_string
 
 
 class ExceptTestCase(unittest.TestCase):

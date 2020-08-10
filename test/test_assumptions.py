@@ -8,9 +8,18 @@ and then running them.
 
 import unittest
 
-from expecthon import (case, expect, set_of, success, that,
-                       that_assumption,  that_list,
-                       that_number, that_result, that_string)
+from expecthon import (
+    case,
+    expect,
+    set_of,
+    success,
+    that,
+    that_assumption,
+    that_list,
+    that_number,
+    that_result,
+    that_string,
+)
 from expecthon.assumptions import BaseAssumption
 
 from .helpers import failed
@@ -147,9 +156,7 @@ class ListAssumptionTestCase(unittest.TestCase):
                     .succeeds()
                 )
         with case("negative test"):
-            expect(
-                that_assumption(that_list([1]).has_length).with_arguments(2).fails()
-            )
+            expect(that_assumption(that_list([1]).has_length).with_arguments(2).fails())
 
     def test_contains(self):
         with case("positive test"):
@@ -162,9 +169,7 @@ class ListAssumptionTestCase(unittest.TestCase):
         with case("negative test"):
 
             expect(
-                that_assumption(that_list([1, 2, 3]).contains)
-                .with_arguments(5)
-                .fails()
+                that_assumption(that_list([1, 2, 3]).contains).with_arguments(5).fails()
             )
 
     def test_has_any(self):
