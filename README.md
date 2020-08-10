@@ -1,4 +1,6 @@
 # Expecthon
+[![codecov](https://codecov.io/gh/svadilfare/expecthon/branch/master/graph/badge.svg)](https://codecov.io/gh/svadilfare/expecthon)
+
 
 python spec testing framework. This aims to help make tests as readable as
 possible, by composing your tests in natural language.
