@@ -9,7 +9,7 @@ and then running them.
 import unittest
 
 from expecthon import (case, expect, set_of, success, that,
-                       that_assumption,  that_list_of,
+                       that_assumption,  that_list,
                        that_number, that_result, that_string)
 from expecthon.assumptions import BaseAssumption
 
@@ -91,7 +91,7 @@ class StringAssumptionTestCase(unittest.TestCase):
         with case("negative test"):
 
             expect(
-                that_assumption(that_list_of("test").contains)
+                that_assumption(that_list("test").contains)
                 .with_arguments("ass")
                 .fails()
             )
@@ -126,35 +126,35 @@ class ListAssumptionTestCase(unittest.TestCase):
 
     def test_is_empty(self):
         with case("positive test"):
-            expect(that_assumption(that_list_of([]).is_empty).succeeds())
+            expect(that_assumption(that_list([]).is_empty).succeeds())
         with case("negative test"):
-            expect(that_assumption(that_list_of([1]).is_empty).fails())
+            expect(that_assumption(that_list([1]).is_empty).fails())
 
     def test_is_not_empty(self):
         with case("positive test"):
-            expect(that_assumption(that_list_of([1]).is_not_empty).succeeds())
+            expect(that_assumption(that_list([1]).is_not_empty).succeeds())
         with case("negative test"):
-            expect(that_assumption(that_list_of([]).is_not_empty).fails())
+            expect(that_assumption(that_list([]).is_not_empty).fails())
 
     def test_has_length(self):
         with case(f"positive test"):
             for i in set_of.positive_integers():
                 i_elements = [i] * i
-                expect(that_list_of(i_elements).has_length(i))
+                expect(that_list(i_elements).has_length(i))
                 expect(
-                    that_assumption(that_list_of(i_elements).has_length)
+                    that_assumption(that_list(i_elements).has_length)
                     .with_arguments(i)
                     .succeeds()
                 )
         with case("negative test"):
             expect(
-                that_assumption(that_list_of([1]).has_length).with_arguments(2).fails()
+                that_assumption(that_list([1]).has_length).with_arguments(2).fails()
             )
 
     def test_contains(self):
         with case("positive test"):
             expect(
-                that_assumption(that_list_of([1, 2, 3]).contains)
+                that_assumption(that_list([1, 2, 3]).contains)
                 .with_arguments(2)
                 .succeeds()
             )
@@ -162,7 +162,7 @@ class ListAssumptionTestCase(unittest.TestCase):
         with case("negative test"):
 
             expect(
-                that_assumption(that_list_of([1, 2, 3]).contains)
+                that_assumption(that_list([1, 2, 3]).contains)
                 .with_arguments(5)
                 .fails()
             )
@@ -170,13 +170,13 @@ class ListAssumptionTestCase(unittest.TestCase):
     def test_has_any(self):
         with case("positive test"):
             expect(
-                that_assumption(that_list_of([1, 2, 3]).has_any)
+                that_assumption(that_list([1, 2, 3]).has_any)
                 .with_arguments(lambda v: that(v).equals(2))
                 .succeeds()
             )
         with case("negative test"):
             expect(
-                that_assumption(that_list_of([1, 2, 3]).has_any)
+                that_assumption(that_list([1, 2, 3]).has_any)
                 .with_arguments(lambda v: that(v).equals(4))
                 .fails()
             )

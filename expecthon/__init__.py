@@ -3,7 +3,7 @@
 from .case import case
 from .assumptions import (
     that,
-    that_list_of,
+    that_list,
     that_string,
     that_function,
     assuming,
@@ -17,7 +17,7 @@ from .meta_assumptions import that_result, that_assumption
 __all__ = [
     "expect",
     "that",
-    "that_list_of",
+    "that_list",
     "that_function",
     "that_number",
     "that_string",
@@ -27,5 +27,4 @@ __all__ = [
     "failed",
     "case",
     "success",
-    "condition",
 ]

@@ -12,7 +12,7 @@ from .builtin_assumptions import (
 from .result import AssumptionResult, failed, success, AssumptionResultBuilder
 
 
-def that_list_of(value: List[Any]) -> ListAssumption:
+def that_list(value: List[Any]) -> ListAssumption:
     return ListAssumption(value)
 
 
@@ -36,7 +36,6 @@ __all__ = [
     "AssumptionResultBuilder",
     "failed",  # TODO move to a static function
     "success",
-    "expect",
     "that",
     "that_list",
     "that_function",

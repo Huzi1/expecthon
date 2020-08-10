@@ -6,7 +6,7 @@ from typing import Any, Callable, Dict, Tuple
 from .assumptions import (
     FunctionAssumption,
     ListAssumption,
-    that_list_of,
+    that_list,
     BaseAssumption,
     that,
     assuming,
@@ -25,7 +25,7 @@ class AssumptionResultAssumption(BaseAssumption[AssumptionResult]):
         return self._copy_with_added_result(
             assuming(
                 that(self._value).is_type(AssumptionResult)
-                & that_list_of(self._value.error_messages).is_empty()
+                & that_list(self._value.error_messages).is_empty()
                 & that(self._value.success).is_true()
             ).else_report("Result was not successful")
         )
@@ -34,7 +34,7 @@ class AssumptionResultAssumption(BaseAssumption[AssumptionResult]):
         return self._copy_with_added_result(
             assuming(
                 that(self._value).is_type(AssumptionResult)
-                & that_list_of(self._value.error_messages).is_not_empty()
+                & that_list(self._value.error_messages).is_not_empty()
                 & that(self._value.success).is_false()
             ).else_report("Result was not unsuccesful")
         )
@@ -42,7 +42,7 @@ class AssumptionResultAssumption(BaseAssumption[AssumptionResult]):
     def has_failure_count_of(self, count: int) -> "AssumptionResultAssumption":
         return self._copy_with_added_result(
             self.is_not_successful()
-            & that_list_of(self._value.error_messages).has_length(count)
+            & that_list(self._value.error_messages).has_length(count)
         )
 
     def where_error_messages(self) -> ListAssumption:
