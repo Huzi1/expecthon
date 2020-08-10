@@ -36,3 +36,5 @@ jobs:
         pytest . --cov=expecthon && coverage report --fail-under=100
     - name: Codecov
       uses: codecov/codecov-action@v1.0.12
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@v1.3
