@@ -113,13 +113,13 @@ class NumlberAssumptionTestCase(unittest.TestCase):
 
     def test_contains(self):
         for i in set_of.positive_integers():
-            with case(f"positive test ({i=})"):
+            with case(f"positive test (i={i})"):
                 expect(that_assumption(that_number(i).is_positive).succeeds())
 
         with case("Zero Fails"):
             expect(that_assumption(that_number(0).is_positive).fails())
         for i in set_of.negative_integers():
-            with case(f"negative test ({i=})"):
+            with case(f"negative test (i={i})"):
                 expect(that_assumption(that_number(i).is_positive).fails())
 
 
