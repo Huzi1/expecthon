@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from typing import TypeVar, Union, Optional, List, Generic
 from dataclasses import dataclass
+from typing import List, Optional, Union
 
 __unittest = True
 

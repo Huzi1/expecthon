@@ -3,16 +3,7 @@
 
 import unittest
 
-from expecthon import (
-    expect,
-    case,
-    success,
-    assuming,
-    that,
-    that_result,
-    failed,
-    that_string,
-)
+from expecthon import expect, failed,  that_string
 
 
 class ExceptTestCase(unittest.TestCase):
@@ -57,13 +48,11 @@ class ExceptTestCase(unittest.TestCase):
         """
         Test the `AssumptionResult.empty()` function
         """
-        error_msg_1 = "error 1"
-        error_msg_2 = "error 2"
         try:
             expect(1)
 
             raise Exception()
-        except ValueError as e:
+        except ValueError:
             # All good, this should happen.
             pass
         except Exception as e:

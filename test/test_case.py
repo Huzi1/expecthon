@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from unittest import TestCase
-from expecthon import expect, case, that_function, success
+
+from expecthon import case, expect, success, that_function
 from expecthon.case import InvalidCallerException
 
 

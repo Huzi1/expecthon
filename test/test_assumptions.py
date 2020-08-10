@@ -6,23 +6,14 @@ These are all written by creating simple tests that should succeed or fail
 and then running them.
 """
 
-from expecthon import (
-    expect,
-    case,
-    success,
-    assuming,
-    that,
-    that_function,
-    that_list_of,
-    that_assumption,
-    that_string,
-    that_result,
-    that_number,
-    set_of,
-)
-from expecthon.assumptions import BaseAssumption
-from .helpers import failed
 import unittest
+
+from expecthon import (case, expect, set_of, success, that,
+                       that_assumption,  that_list_of,
+                       that_number, that_result, that_string)
+from expecthon.assumptions import BaseAssumption
+
+from .helpers import failed
 
 
 class BaseAssumptionTestCase(unittest.TestCase):
@@ -144,19 +135,6 @@ class ListAssumptionTestCase(unittest.TestCase):
             expect(that_assumption(that_list_of([1]).is_not_empty).succeeds())
         with case("negative test"):
             expect(that_assumption(that_list_of([]).is_not_empty).fails())
-
-    def test_has_length(self):
-        for i in range(0, 10):
-            with case(f"positive test (with length={i})"):
-                expect(
-                    that_assumption(that_list_of([i] * i).has_length)
-                    .with_arguments(i)
-                    .succeeds()
-                )
-        with case("negative test"):
-            expect(
-                that_assumption(that_list_of([1]).has_length).with_arguments(2).fails()
-            )
 
     def test_has_length(self):
         with case(f"positive test"):
