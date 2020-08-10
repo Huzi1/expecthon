@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from typing import List, Union
-from .assumption_classes import AssumptionResult, BaseAssumption
+from .assumptions import BaseAssumption, AssumptionResult
 
 __unittest = True
+
 
 def expect(assumption: Union[AssumptionResult, BaseAssumption]) -> None:
     """

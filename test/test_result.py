@@ -4,10 +4,10 @@ Tests the core classes for the underlying system
 """
 import unittest
 
-from expecthon import expect, case, failed_test, success, assuming, that
-from expecthon.assumption_classes import AssumptionResultBuilder
+from expecthon import expect, case, success, assuming, that, that_result
+from expecthon.assumptions import AssumptionResultBuilder
 
-from .assumptions import empty, failed, that_result
+from .helpers import empty, failed
 
 
 class AssumptionResultTestCase(unittest.TestCase):
@@ -50,6 +50,13 @@ class AssumptionResultTestCase(unittest.TestCase):
             result = failed() & (failed() & failed())
             expect(that_result(result).has_failure_count_of(3))
 
+    def test_and_none(self):
+        """
+        Test that we can do `A & None`
+        """
+        result = failed() & None
+        expect(that_result(result).has_failure_count_of(1))
+
     def test_success(self):
         """
         test the `failed_test` helper function
@@ -62,7 +69,7 @@ class AssumptionResultTestCase(unittest.TestCase):
         """
         error_msg = "fail"
         expect(
-            that_result(failed_test(error_msg))
+            that_result(failed(error_msg))
             .has_failure_count_of(1)
             .and_()
             .where_error_messages()

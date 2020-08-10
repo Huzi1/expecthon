@@ -1,82 +1,11 @@
 #!/usr/bin/env python3
-from typing import TypeVar, Union, Optional, List, Generic
-from dataclasses import dataclass
+from typing import Generic, Optional, TypeVar, Union, Any
 
-
-@dataclass
-class AssumptionResult:
-    """
-    Holds the result of a given assumption / test expection.
-
-    Accessible is all the errors, in other words, the failed assumptions, as well
-    as a few helper methods in this regard.
-    """
-
-    error_messages: List[str]
-
-    def _copy(self) -> "AssumptionResult":
-        return AssumptionResult(self.error_messages)
-
-    @property
-    def success(self):
-        return not self.error_messages
-
-    @classmethod
-    def empty(cls) -> "AssumptionResult":
-        return AssumptionResult([])
-
-    def __and__(
-        self, other: Union["AssumptionResult", "BaseAssumption", None]
-    ) -> "AssumptionResult":
-        if other is None:
-            return self._copy()
-        if isinstance(other, BaseAssumption):
-            other = other._result
-
-        if isinstance(other, AssumptionResult):
-            return AssumptionResult(self.error_messages + other.error_messages)
-        raise NotImplementedError()
-
-    def __plus__(
-        self, other: Union["AssumptionResult", "BaseAssumption", None]
-    ) -> "AssumptionResult":
-        return self & other
-
-
-class AssumptionResultBuilder:
-    """
-    Builder to create a fluent interface for creating AssumptionResults
-
-    Should primarily be used with `assuming`
-    """
-
-    def __init__(self, clause: bool):
-        self._clause = clause
-
-    def else_report(self, error_message: str) -> AssumptionResult:
-        """
-        Returns a failed AssumptionResult if self._clause is true with the given error messages
-        """
-        return AssumptionResult([error_message] if not self._clause else [])
-
-
-def failed_test(error_message: str) -> AssumptionResult:
-    return AssumptionResult([error_message])
-
-
-def success() -> AssumptionResult:
-    return AssumptionResult([])
-
-
-def assuming(clause: bool) -> AssumptionResultBuilder:
-    """
-    Returns a builder for AssumptionResults for fluent interfaces.
-
-    Can be used like:
-    `assuming(1+1).else_report("One doesn't equal One")`
-    """
-    return AssumptionResultBuilder(clause)
-
+from .result import (
+    AssumptionResult,
+    assumption_result_or_empty,
+    AssumptionResultBuilder,
+)
 
 T = TypeVar("T")
 
@@ -113,7 +42,7 @@ class BaseAssumption(Generic[T]):
 
     def doesnt_equals(self, expected_value: T) -> "BaseAssumption":
         return self._copy_with_added_result(
-            assuming(self._value == expected_value).else_report(
+            assuming(self._value != expected_value).else_report(
                 f"{self._value} shouldn't equal {expected_value}"
             )
         )
@@ -164,11 +93,44 @@ class BaseAssumption(Generic[T]):
             return self._result & other
         return self._result & other._result
 
+    def __rand__(
+        self, other: Union["BaseAssumption", AssumptionResult, None]
+    ) -> AssumptionResult:
 
-def assumption_result_or_empty(result: Optional[AssumptionResult]) -> AssumptionResult:
+        return self & other
+
+
+def that(value: Any) -> BaseAssumption:
+    return BaseAssumption(value)
+
+
+def not_assuming(
+    clause: Union[bool, AssumptionResult, BaseAssumption]
+) -> AssumptionResultBuilder:
     """
-    Returns the result if not None otherwise creates an empty result
+    Returns a builder for AssumptionResults for fluent interfaces.
+
+    Can be used like:
+    `assuming(1+1).else_report("One doesn't equal One")`
     """
-    if result is None:
-        return AssumptionResult.empty()
-    return result
+    if isinstance(clause, BaseAssumption):
+        clause = clause.result()
+    if isinstance(clause, AssumptionResult):
+        clause = clause.success
+    return AssumptionResultBuilder(not clause)
+
+
+def assuming(
+    clause: Union[bool, AssumptionResult, BaseAssumption]
+) -> AssumptionResultBuilder:
+    """
+    Returns a builder for AssumptionResults for fluent interfaces.
+
+    Can be used like:
+    `assuming(1+1).else_report("One doesn't equal One")`
+    """
+    if isinstance(clause, BaseAssumption):
+        clause = clause.result()
+    if isinstance(clause, AssumptionResult):
+        clause = clause.success
+    return AssumptionResultBuilder(clause)

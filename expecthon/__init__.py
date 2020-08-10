@@ -1,25 +1,31 @@
 #!/usr/bin/env python3
 
-from .assumption_classes import (
-    AssumptionResult,
+from .case import case
+from .assumptions import (
+    that,
+    that_list_of,
+    that_string,
+    that_function,
     assuming,
-    BaseAssumption,
-    failed_test,
+    failed,
     success,
+    that_number,
 )
 from .expect import expect
-from .case import case
-from .assumptions import that, that_list_of, that_function
+from .meta_assumptions import that_result, that_assumption
 
 __all__ = [
-    "AssumptionResult",
     "expect",
     "that",
     "that_list_of",
     "that_function",
-    "BaseAssumption",
+    "that_number",
+    "that_string",
+    "that_result",
+    "that_assumption",
     "assuming",
-    "failed_test",
+    "failed",
     "case",
     "success",
+    "condition",
 ]

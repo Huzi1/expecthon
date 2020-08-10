@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # TODO add comments
 import decimal
-from typing import Any, List, Callable, Type, Union
-from .assumption_classes import BaseAssumption, AssumptionResult, assuming, failed_test
+from typing import Any, Callable, List, Type, Union
 
+from .base_assumption import BaseAssumption, assuming, not_assuming, that
+from .result import AssumptionResult, failed
 
-def that(value: Any) -> BaseAssumption:
-    return BaseAssumption(value)
+__unittest = True
 
 
 class ListAssumption(BaseAssumption[List[Any]]):
@@ -15,17 +15,19 @@ class ListAssumption(BaseAssumption[List[Any]]):
 
     def is_empty(self) -> "ListAssumption":
         return self._copy_with_added_result(
-            assuming(len(self._value) == 0).else_report(f"{self._value} is not empty")
+            assuming(that(len(self._value)).equals(0)).else_report(
+                f"{self._value} is not empty"
+            )
         )
 
     def is_not_empty(self) -> "ListAssumption":
         return self._copy_with_added_result(
-            assuming(len(self._value) != 0).else_report(f"{self._value} is empty")
+            not_assuming(self.is_empty()).else_report(f"{self._value} is empty")
         )
 
     def has_length(self, expected_value: int) -> "ListAssumption":
         return self._copy_with_added_result(
-            assuming(len(self._value) == expected_value).else_report(
+            assuming(that(len(self._value)).equals(expected_value)).else_report(
                 f"{self._value} should be length {expected_value}"
             )
         )
@@ -37,15 +39,43 @@ class ListAssumption(BaseAssumption[List[Any]]):
             )
         )
 
-    def has_any(self, assumer: BaseAssumption[Any]) -> "ListAssumption":
-        raise NotImplementedError()
+    def has_any(
+        self, assumer_func: Callable[[Any], AssumptionResult]
+    ) -> "ListAssumption":
+        # TODO find a way to visualize the function
+        return self._copy_with_added_result(
+            assuming(
+                any(assumer_func(element).result().success for element in self._value)
+            ).else_report(f"No elements that fulfill the clause was found")
+        )
 
 
-class DecimalAssumption(BaseAssumption[decimal.Decimal]):
+class StringAssumption(BaseAssumption[decimal.Decimal]):
+    def _copy_with_added_result(
+        self, new_result: AssumptionResult
+    ) -> "StringAssumption":
+        return StringAssumption(self._value, new_result & self._result)
+
+    def contains(self, expected_value: Any) -> "ListAssumption":
+        return self._copy_with_added_result(
+            assuming(expected_value in self._value).else_report(
+                f"{self._value} doesn't contain ´{expected_value}´"
+            )
+        )
+
+
+class DecimalAssumption(BaseAssumption[decimal.Decimal],):
     def _copy_with_added_result(
         self, new_result: AssumptionResult
     ) -> "DecimalAssumption":
         return DecimalAssumption(self._value, new_result & self._result)
+
+    def is_positive(self):
+        return self._copy_with_added_result(
+            assuming(self._value > 0).else_report(
+                f"{self._value} isn't bigger than zero"
+            )
+        )
 
 
 class FunctionAssumption(BaseAssumption[Callable[[], Any]]):
@@ -62,7 +92,7 @@ class FunctionAssumption(BaseAssumption[Callable[[], Any]]):
         try:
             self._value()
             return self._copy_with_added_result(
-                failed_test(f"function should have failed with {expected_exception}")
+                failed(f"function should have failed with {expected_exception}")
             )
         except Exception as exception:
             return self._copy_with_added_result(
@@ -77,15 +107,6 @@ class FunctionAssumption(BaseAssumption[Callable[[], Any]]):
             self._value()
             return self._copy()
         except Exception as exception:
-            raise exception
             return self._copy_with_added_result(
-                failed_test(f"function should have succeeded (failed with {exception})")
+                failed(f"function should have succeeded (failed with {exception})")
             )
-
-
-def that_list_of(value: List[Any]) -> ListAssumption:
-    return ListAssumption(value)
-
-
-def that_function(value: Callable[[], Any]) -> FunctionAssumption:
-    return FunctionAssumption(value)
