@@ -19,6 +19,7 @@ from expecthon import (
     that_number,
     that_result,
     that_string,
+    negative_test,
 )
 from expecthon.assumptions import BaseAssumption
 
@@ -34,54 +35,59 @@ class BaseAssumptionTestCase(unittest.TestCase):
         expect(that(that(None)).is_type(BaseAssumption))
 
     def test_equals(self):
-        with case("positive test"):
-            for i in set_of.integers():
-                expect(that_assumption(that(i).equals).with_arguments(i).succeeds())
-        with case("negative test"):
-            expect(that_assumption(that(1 + 1).equals).with_arguments(3).fails())
+        for i in set_of.integers():
+            expect(that(i).equals(i))
+
+    def test_equals_negative_test(self):
+        with negative_test():
+            expect(that(1 + 1).equals(3))
 
     def test_doesnt_equals(self):
-        with case("positive test"):
-            for i in set_of.integers():
-                expect(
-                    that_assumption(that(i + 1).doesnt_equals)
-                    .with_arguments(i)
-                    .succeeds()
-                )
-        with case("negative test"):
-            expect(that_assumption(that(1 + 1).doesnt_equals).with_arguments(2).fails())
+        for i in set_of.integers():
+            expect(that(i + 1).doesnt_equals(i))
+
+    def test_doesnt_equals_negative_test(self):
+        with negative_test():
+            expect(that(1 + 1).doesnt_equals(2))
 
     def test_is(self):
-        with case("positive test"):
-            expect(that_assumption(that(5).is_).with_arguments(5).succeeds())
-        with case("negative test"):
+        for i in set_of.anything():
+            expect(that(i).is_(i))
+
+    def test_is_negative_test(self):
+        with negative_test():
             # as lists are pass by reference
-            expect(that_assumption(that([1]).is_).with_arguments([1]).fails())
+            expect(that([1]).is_([1]))
 
     def test_is_not(self):
-        with case("positive test"):
-            # as lists are pass by reference
-            expect(that_assumption(that([1]).is_not).with_arguments([1]).succeeds())
-        with case("negative test"):
-            expect(that_assumption(that(1).is_not).with_arguments(1).fails())
+        # as lists are pass by reference
+        expect(that([1]).is_not([1]))
+
+    def test_is_not_negative_test(self):
+        with negative_test():
+            expect(that(1).is_not(1))
 
     def test_is_type(self):
-        with case("positive test"):
-            expect(that_assumption(that(5).is_type).with_arguments(int).succeeds())
-        with case("negative test"):
-            expect(that_assumption(that("5").is_type).with_arguments(int).fails())
+        for i in set_of.integers():
+            expect(that(i).is_type(int))
+
+    def test_is_type_negative_test(self):
+        with negative_test():
+            expect(that("5").is_type(int))
 
     def test_is_true(self):
-        with case("positive test"):
-            expect(that_assumption(that(True).is_true).succeeds())
-        with case("negative test"):
-            expect(that_assumption(that(False).is_true).fails())
+        expect(that(True).is_true())
+
+    def test_is_true_negative_test(self):
+        with negative_test():
+            expect(that(False).is_true())
 
     def test_is_false(self):
-        with case("positive test"):
-            expect(that_assumption(that(False).is_false).succeeds())
-        with case("negative test"):
-            expect(that_assumption(that(True).is_false).fails())
+        expect(that(False).is_false())
+
+    def test_is_false_negative_test(self):
+        with negative_test():
+            expect(that(True).is_false())
 
 
 class StringAssumptionTestCase(unittest.TestCase):
@@ -90,20 +96,11 @@ class StringAssumptionTestCase(unittest.TestCase):
     """
 
     def test_contains(self):
-        with case("positive test"):
-            expect(
-                that_assumption(that_string("test").contains)
-                .with_arguments("te")
-                .succeeds()
-            )
+        expect(that_string("test").contains("te"))
 
-        with case("negative test"):
-
-            expect(
-                that_assumption(that_list("test").contains)
-                .with_arguments("ass")
-                .fails()
-            )
+    def test_contains_negative_test(self):
+        with negative_test():
+            expect(that_list("test").contains("ass"))
 
 
 class NumlberAssumptionTestCase(unittest.TestCase):
@@ -111,16 +108,20 @@ class NumlberAssumptionTestCase(unittest.TestCase):
     Tests regarding the `DecimalAssumption` `that_number`
     """
 
-    def test_contains(self):
+    def test_is_positive(self):
         for i in set_of.positive_integers():
             with case(f"positive test (i={i})"):
-                expect(that_assumption(that_number(i).is_positive).succeeds())
+                expect(that_number(i).is_positive())
 
-        with case("Zero Fails"):
-            expect(that_assumption(that_number(0).is_positive).fails())
+    def test_zero_is_not_positive(self):
+        with negative_test():
+            expect(that_number(0).is_positive())
+
+    def test_less_than_zero_is_not_positive(self):
         for i in set_of.negative_integers():
-            with case(f"negative test (i={i})"):
-                expect(that_assumption(that_number(i).is_positive).fails())
+            with case(f"i={i}"):
+                with negative_test():
+                    expect(that_number(i).is_positive())
 
 
 class FunctionAssumptionTestCase(unittest.TestCase):
@@ -130,61 +131,44 @@ class FunctionAssumptionTestCase(unittest.TestCase):
 
 class ListAssumptionTestCase(unittest.TestCase):
     """
-    Tests regarding the `ListAssumption` `that_list_of`
+    Tests regarding the `ListAssumption` `that_list`
     """
 
     def test_is_empty(self):
-        with case("positive test"):
-            expect(that_assumption(that_list([]).is_empty).succeeds())
-        with case("negative test"):
-            expect(that_assumption(that_list([1]).is_empty).fails())
+        expect(that_list([]).is_empty())
+
+    def test_is_empty_negative_test(self):
+        with negative_test():
+            expect(that_list([1]).is_empty())
 
     def test_is_not_empty(self):
-        with case("positive test"):
-            expect(that_assumption(that_list([1]).is_not_empty).succeeds())
-        with case("negative test"):
-            expect(that_assumption(that_list([]).is_not_empty).fails())
+        expect(that_list([1]).is_not_empty())
+
+    def test_is_not_empty_negative_test(self):
+        with negative_test():
+            expect(that_list([]).is_not_empty())
 
     def test_has_length(self):
-        with case(f"positive test"):
-            for i in set_of.positive_integers():
-                i_elements = [i] * i
-                expect(that_list(i_elements).has_length(i))
-                expect(
-                    that_assumption(that_list(i_elements).has_length)
-                    .with_arguments(i)
-                    .succeeds()
-                )
-        with case("negative test"):
-            expect(that_assumption(that_list([1]).has_length).with_arguments(2).fails())
+        for elements in set_of.lists():
+            expect(that_list(elements).has_length(len(elements)))
+
+    def test_has_length_negatiev_test(self):
+        with negative_test():
+            expect(that_list([1]).has_length(2))
 
     def test_contains(self):
-        with case("positive test"):
-            expect(
-                that_assumption(that_list([1, 2, 3]).contains)
-                .with_arguments(2)
-                .succeeds()
-            )
+        expect(that_list([1, 2, 3]).contains(2))
 
-        with case("negative test"):
-
-            expect(
-                that_assumption(that_list([1, 2, 3]).contains).with_arguments(5).fails()
-            )
+    def test_contains_negative_test(self):
+        with negative_test():
+            expect(that_list([1, 2, 3]).contains(5))
 
     def test_has_any(self):
-        with case("positive test"):
-            expect(
-                that_assumption(that_list([1, 2, 3]).has_any)
-                .with_arguments(lambda v: that(v).equals(2))
-                .succeeds()
-            )
-        with case("negative test"):
-            expect(
-                that_assumption(that_list([1, 2, 3]).has_any)
-                .with_arguments(lambda v: that(v).equals(4))
-                .fails()
-            )
+        expect(that_list([1, 2, 3]).has_any(lambda v: that(v).equals(2)))
+
+    def test_has_any_negative_test(self):
+        with negative_test():
+            expect(that_list([1, 2, 3]).has_any(lambda v: that(v).equals(4)))
 
 
 class BaseAssumptionAssumptionTestCase(unittest.TestCase):

@@ -1,6 +1,28 @@
 #!/usr/bin/env python3
 
 
+def anything():
+    """
+    Returns a generator of arbitrary objects / values
+    """
+    # TODO make smaller
+    return [*integers(), *strings()]
+
+
+def strings():
+    """
+    Returns a generator of arbitrary strings
+    """
+    return ("A" * i for i in positive_integers())
+
+
+def lists():
+    """
+    Returns a generator of arbitrary lists
+    """
+    return ([i] * i for i in positive_integers())
+
+
 def integers():
     """
     Returns a generator of arbitrary integers (excluding zero)

@@ -1,6 +1,7 @@
 import inspect
 from unittest import TestCase
-from typing import Dict, Any
+from .expect import expect
+from .assumptions import failed
 
 
 class InvalidCallerException(Exception):
@@ -13,25 +14,17 @@ def case(msg: str):
     Syntactic sugar to avoid writing self.subTest(msg)
     """
 
-    test_case = get_testcase_from_caller(inspect.currentframe())
+    test_case = get_testcase(inspect.currentframe())
 
     return test_case.subTest(msg)
 
 
-def get_testcase_from_caller(frame) -> TestCase:
-    test_case = get_self_from_caller(frame)
-    if not isinstance(test_case, TestCase):
+def get_testcase(frame) -> TestCase:
+    test_case = frame.f_locals.get("self", None)
+    if test_case is None or not isinstance(test_case, TestCase):
+        if frame.f_back:
+            return get_testcase(frame.f_back)
+
         raise InvalidCallerException()
+
     return test_case
-
-
-def get_self_from_caller(frame) -> object:
-    locals_from_calling_function = get_locals_from_caller(frame)
-
-    if "self" not in locals_from_calling_function:
-        raise InvalidCallerException()
-    return locals_from_calling_function["self"]
-
-
-def get_locals_from_caller(frame) -> Dict[str, Any]:
-    return frame.f_back.f_locals

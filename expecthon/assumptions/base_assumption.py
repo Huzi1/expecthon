@@ -10,7 +10,7 @@ from .result import (
 T = TypeVar("T")
 
 
-class BaseAssumption(Generic[T]):
+class BaseAssumption(Generic[T], object):
     """
     Used to create AssumptionResults, which is the basis for any test
 

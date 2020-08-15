@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from .case import case
+from .negative_test import negative_test
 from .assumptions import (
     that,
     that_list,
@@ -26,5 +27,6 @@ __all__ = [
     "assuming",
     "failed",
     "case",
+    "negative_test",
     "success",
 ]

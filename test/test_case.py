@@ -1,27 +1,31 @@
 #!/usr/bin/env python3
+import inspect
 from unittest import TestCase
 
-from expecthon import case, expect, success, that_function
-from expecthon.case import InvalidCallerException
+from expecthon import case, expect, success, that
+from expecthon.case import get_testcase
 
 
+# TODO find out how to do a negative test
 class CaseTestCase(TestCase):
-    def test_fails_if_used_in_function_without_self(self):
-        def failing_function():
-            with case("This fails!"):
-                ...
+    def test_get_testcase(self):
+        """
+        Test that the correct testcase is found
+        """
+        testcase = get_testcase(inspect.currentframe())
+        expect(that(testcase).equals(self))
 
-        expect(that_function(failing_function).fails_with(InvalidCallerException))
+    def test_get_testcase_in_nested_function(self):
+        """
+        Test that the correct testcase is found in nested function
+        """
 
-    def test_fails_if_self_isnt_testcase(self):
-        def failing_function():
-            # assigned as to make self defined
-            self = 5
-            with case("This fails!"):
-                ...
+        def get_test_case_wrapper():
+            return lambda: get_testcase(inspect.currentframe())
 
-        expect(that_function(failing_function).fails_with(InvalidCallerException))
+        testcase = get_test_case_wrapper()()
+        expect(that(testcase).equals(self))
 
-    def test_succeeds(self):
+    def test_can_use_case(self):
         with case("this succeeds"):
             expect(success())
