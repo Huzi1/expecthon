@@ -11,7 +11,7 @@ __unittest = True
 
 class ListAssumption(BaseAssumption[List[Any]]):
     def _copy_with_added_result(self, new_result: AssumptionResult) -> "ListAssumption":
-        return ListAssumption(self._value, new_result & self._result)
+        return ListAssumption(self._value, new_result & self)
 
     def is_empty(self) -> "ListAssumption":
         return self._copy_with_added_result(
@@ -45,7 +45,7 @@ class ListAssumption(BaseAssumption[List[Any]]):
         # TODO find a way to visualize the function
         return self._copy_with_added_result(
             assuming(
-                any(assumer_func(element).result().success for element in self._value)
+                any(assumer_func(element).success for element in self._value)
             ).else_report(f"No elements that fulfill the clause was found")
         )
 
@@ -54,7 +54,7 @@ class StringAssumption(BaseAssumption[decimal.Decimal]):
     def _copy_with_added_result(
         self, new_result: AssumptionResult
     ) -> "StringAssumption":
-        return StringAssumption(self._value, new_result & self._result)
+        return StringAssumption(self._value, new_result & self)
 
     def contains(self, expected_value: Any) -> "ListAssumption":
         return self._copy_with_added_result(
@@ -68,7 +68,7 @@ class DecimalAssumption(BaseAssumption[decimal.Decimal],):
     def _copy_with_added_result(
         self, new_result: AssumptionResult
     ) -> "DecimalAssumption":
-        return DecimalAssumption(self._value, new_result & self._result)
+        return DecimalAssumption(self._value, new_result & self)
 
     def is_positive(self):
         return self._copy_with_added_result(
@@ -84,7 +84,7 @@ class FunctionAssumption(BaseAssumption[Callable[[], Any]]):
     def _copy_with_added_result(
         self, new_result: AssumptionResult
     ) -> "FunctionAssumption":
-        return FunctionAssumption(self._value, new_result & self._result)
+        return FunctionAssumption(self._value, new_result & self)
 
     def fails_with(
         self, expected_exception: Union[Exception, Type[Exception]]

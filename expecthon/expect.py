@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-from typing import List, Union
-from .assumptions import BaseAssumption, AssumptionResult
+from typing import List
+from .assumptions import AssumptionResult
 
 __unittest = True
 
 
-def expect(assumption: Union[AssumptionResult, BaseAssumption]) -> None:
+def expect(assumption: AssumptionResult) -> None:
     """
     Expect the assumption to be true - raises AssertionError otherwise
     """
@@ -14,14 +14,12 @@ def expect(assumption: Union[AssumptionResult, BaseAssumption]) -> None:
     _raise_if_assumption_failed(assumption)
 
 
-def _raise_if_wrong_type(assumption: Union[AssumptionResult, BaseAssumption]) -> None:
-    if not isinstance(assumption, (AssumptionResult, BaseAssumption)):
+def _raise_if_wrong_type(assumption: AssumptionResult) -> None:
+    if not isinstance(assumption, AssumptionResult):
         raise ValueError(f"{assumption} is the wrong type {type(assumption)}")
 
 
-def _raise_if_assumption_failed(assumption: Union[AssumptionResult, BaseAssumption]):
-    if isinstance(assumption, BaseAssumption):
-        assumption = assumption._result
+def _raise_if_assumption_failed(assumption: AssumptionResult):
 
     if not assumption.success:
         raise AssertionError(_format_error_messages(assumption.error_messages))

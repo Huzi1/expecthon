@@ -10,7 +10,7 @@ from .result import (
 T = TypeVar("T")
 
 
-class BaseAssumption(Generic[T], object):
+class BaseAssumption(Generic[T], AssumptionResult, object):
     """
     Used to create AssumptionResults, which is the basis for any test
 
@@ -20,18 +20,15 @@ class BaseAssumption(Generic[T], object):
 
     def __init__(self, value: T, assumption_result: Optional[AssumptionResult] = None):
         self._value = value
-        self._result = assumption_result_or_empty(assumption_result)
+        super().__init__(assumption_result_or_empty(assumption_result).error_messages)
 
     def _copy_with_added_result(
         self, new_result: AssumptionResult
     ) -> "BaseAssumption[T]":
-        return type(self)(self._value, new_result & self._result)
+        return type(self)(self._value, self & new_result)
 
     def _copy(self) -> "BaseAssumption[T]":
-        return type(self)(self._value, self._result)
-
-    def result(self) -> AssumptionResult:
-        return self._result
+        return type(self)(self._value, self)
 
     def equals(self, expected_value: T) -> "BaseAssumption":
         return self._copy_with_added_result(
@@ -83,22 +80,6 @@ class BaseAssumption(Generic[T], object):
     def and_(self) -> "BaseAssumption":
         return self
 
-    def __and__(
-        self, other: Union["BaseAssumption", AssumptionResult, None]
-    ) -> AssumptionResult:
-
-        if other is None:
-            return self._result
-        if isinstance(other, AssumptionResult):
-            return self._result & other
-        return self._result & other._result
-
-    def __rand__(
-        self, other: Union["BaseAssumption", AssumptionResult, None]
-    ) -> AssumptionResult:
-
-        return self & other
-
 
 def that(value: Any) -> BaseAssumption:
     return BaseAssumption(value)
@@ -113,8 +94,6 @@ def not_assuming(
     Can be used like:
     `assuming(1+1).else_report("One doesn't equal One")`
     """
-    if isinstance(clause, BaseAssumption):
-        clause = clause.result()
     if isinstance(clause, AssumptionResult):
         clause = clause.success
     return AssumptionResultBuilder(not clause)
@@ -129,8 +108,6 @@ def assuming(
     Can be used like:
     `assuming(1+1).else_report("One doesn't equal One")`
     """
-    if isinstance(clause, BaseAssumption):
-        clause = clause.result()
     if isinstance(clause, AssumptionResult):
         clause = clause.success
     return AssumptionResultBuilder(clause)

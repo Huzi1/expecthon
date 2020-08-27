@@ -19,7 +19,7 @@ class AssumptionResultAssumption(BaseAssumption[AssumptionResult]):
     def _copy_with_added_result(
         self, new_result: AssumptionResult
     ) -> "AssumptionResultAssumption":
-        return AssumptionResultAssumption(self._value, new_result & self._result)
+        return AssumptionResultAssumption(self._value, new_result & self)
 
     def is_successful(self) -> "AssumptionResultAssumption":
         return self._copy_with_added_result(
@@ -77,7 +77,7 @@ class BaseAssumptionAssumption(BaseAssumption[Callable[[], Any]]):
         self, new_result: AssumptionResult
     ) -> "BaseAssumptionAssumption":
         return BaseAssumptionAssumption(
-            self._value, assumption_result=new_result & self._result
+            self._value, assumption_result=new_result & self
         )
 
     def succeeds(self) -> "BaseAssumptionAssumption":
@@ -90,13 +90,13 @@ class BaseAssumptionAssumption(BaseAssumption[Callable[[], Any]]):
     def fails(self) -> "BaseAssumptionAssumption":
         # TODO contain the source of the error
         return self._copy_with_added_result(
-            assuming(
-                self._function_assumption.fails_with(AssertionError).result()
-            ).else_report("Assumption should have failed")
+            assuming(self._function_assumption.fails_with(AssertionError)).else_report(
+                "Assumption should have failed"
+            )
         )
 
     def with_arguments(self, *args, **kwargs) -> "BaseAssumptionAssumption":
-        return BaseAssumptionAssumption(self._value, args, kwargs, self._result)
+        return BaseAssumptionAssumption(self._value, args, kwargs, self)
 
 
 def that_assumption(
