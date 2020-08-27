@@ -22,7 +22,7 @@ class BaseAssumption(Generic[T], AssumptionResult, object):
         self._value = value
         super().__init__(assumption_result_or_empty(assumption_result).error_messages)
 
-    def _copy_with_added_result(
+    def _add_result(
         self, new_result: AssumptionResult
     ) -> "BaseAssumption[T]":
         return type(self)(self._value, self & new_result)
@@ -31,54 +31,54 @@ class BaseAssumption(Generic[T], AssumptionResult, object):
         return type(self)(self._value, self)
 
     def equals(self, expected_value: T) -> "BaseAssumption":
-        return self._copy_with_added_result(
+        return self._add_result(
             assuming(self._value == expected_value).else_report(
                 f"{self._value} should equal {expected_value}"
             )
         )
 
     def doesnt_equals(self, expected_value: T) -> "BaseAssumption":
-        return self._copy_with_added_result(
+        return self._add_result(
             assuming(self._value != expected_value).else_report(
                 f"{self._value} shouldn't equal {expected_value}"
             )
         )
 
     def is_(self, expected_value: T) -> "BaseAssumption":
-        return self._copy_with_added_result(
+        return self._add_result(
             assuming(self._value is expected_value).else_report(
                 f"{self._value} should be {expected_value}"
             )
         )
 
     def is_not(self, expected_value: T) -> "BaseAssumption":
-        return self._copy_with_added_result(
+        return self._add_result(
             assuming(self._value is not expected_value).else_report(
                 f"{self._value} should be {expected_value}"
             )
         )
 
     def is_false(self) -> "BaseAssumption":
-        return self._copy_with_added_result(
+        return self._add_result(
             assuming(not bool(self._value)).else_report(
                 f"{self._value} should be falsy"
             )
         )
 
     def is_true(self) -> "BaseAssumption":
-        return self._copy_with_added_result(
+        return self._add_result(
             assuming(bool(self._value)).else_report(f"{self._value} should be truthy")
         )
 
     def is_type(self, expected_type: type) -> "BaseAssumption":
-        return self._copy_with_added_result(
+        return self._add_result(
             assuming(isinstance(self._value, expected_type)).else_report(
                 f"{self._value} is not instance of {expected_type}"
             )
         )
 
     def and_(self) -> "BaseAssumption":
-        return self
+        return self._copy()
 
 
 def that(value: Any) -> BaseAssumption:
