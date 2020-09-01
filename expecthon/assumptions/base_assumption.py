@@ -22,9 +22,7 @@ class BaseAssumption(Generic[T], AssumptionResult, object):
         self._value = value
         super().__init__(assumption_result_or_empty(assumption_result).error_messages)
 
-    def _add_result(
-        self, new_result: AssumptionResult
-    ) -> "BaseAssumption[T]":
+    def _add_result(self, new_result: AssumptionResult) -> "BaseAssumption[T]":
         return type(self)(self._value, self & new_result)
 
     def _copy(self) -> "BaseAssumption[T]":

@@ -110,18 +110,87 @@ class NumlberAssumptionTestCase(unittest.TestCase):
 
     def test_is_positive(self):
         for i in set_of.positive_integers():
-            with case(f"positive test (i={i})"):
-                expect(that_number(i).is_positive())
+            expect(that_number(i).is_positive())
 
-    def test_zero_is_not_positive(self):
+    def test_is_positive__special_case_zero(self):
         with negative_test():
             expect(that_number(0).is_positive())
 
-    def test_less_than_zero_is_not_positive(self):
+    def test_is_positive__negative_test(self):
         for i in set_of.negative_integers():
-            with case(f"i={i}"):
-                with negative_test():
-                    expect(that_number(i).is_positive())
+            with negative_test():
+                expect(that_number(i).is_positive())
+
+    def test_is_negative(self):
+        for i in set_of.negative_integers():
+            expect(that_number(i).is_negative())
+
+    def test_is_negative__negative_test(self):
+        with negative_test():
+            for i in set_of.positive_integers():
+                expect(that_number(i).is_negative())
+
+    def test_is_negative__special_case_zero(self):
+        with negative_test():
+            expect(that_number(0).is_negative())
+
+    def test_is_bigger_than(self):
+        for i in set_of.few_integers():
+            for j in [integer for integer in set_of.few_integers() if integer > i]:
+                expect(that_number(j).is_bigger_than(i))
+
+    def test_is_bigger_than__negative_test(self):
+        with negative_test():
+            for i in set_of.few_integers():
+                for j in [integer for integer in set_of.few_integers() if integer > i]:
+                    expect(that_number(i).is_bigger_than(j))
+
+    def test_is_bigger_than_equals(self):
+        for i in set_of.few_integers():
+            for j in set_of.few_integers().bigger_than_equals(i):
+                expect(that_number(j).is_bigger_than_equals(i))
+
+    def test_is_bigger_than_equals__negative_test(self):
+        with negative_test():
+            for i in set_of.few_integers():
+                for j in set_of.few_integers().bigger_than_equals(i):
+                    expect(that_number(i).is_bigger_than_equals(j))
+
+    def test_is_less_than(self):
+        for i in set_of.few_integers():
+            for j in set_of.few_integers().less_than(i):
+                expect(that_number(j).is_less_than(i))
+
+    def test_is_less_than__negative_test(self):
+        with negative_test():
+            for i in set_of.few_integers():
+                for j in set_of.few_integers().less_than(i):
+                    expect(that_number(i).is_less_than(j))
+
+    def test_is_less_than_equals(self):
+        for i in set_of.few_integers():
+            for j in set_of.few_integers().less_than_equals(i):
+                expect(that_number(j).is_less_than_equals(i))
+
+    def test_is_less_than_equals__negative_test(self):
+        with negative_test():
+            for i in set_of.few_integers():
+                for j in set_of.few_integers().less_than_equals(i):
+                    expect(that_number(i).is_less_than_equals(j))
+
+    def test_can_chain_results(self):
+        expect(that_number(1).is_positive().is_bigger_than(0))
+
+    def test_can_chain_results__negative_test(self):
+        with case("first link fails"):
+            with negative_test():
+                expect(that_number(1).is_negative().is_bigger_than(0))
+        with case("second link fails"):
+            with negative_test():
+                expect(that_number(1).is_positive().is_bigger_than(2))
+        with case("both link fails"):
+            with negative_test():
+                expect(that_number(1).is_negative().is_bigger_than(2))
 
 
 class FunctionAssumptionTestCase(unittest.TestCase):
@@ -174,29 +243,21 @@ class ListAssumptionTestCase(unittest.TestCase):
 class BaseAssumptionAssumptionTestCase(unittest.TestCase):
     def test_fails__positive_test(self):
         failing_assumption = that(True).is_false
-        expect(
-            that_assumption(failing_assumption).fails()
-        )
+        expect(that_assumption(failing_assumption).fails())
 
     def test_fails__negative_test(self):
         with negative_test():
             succeeding_assumption = that(False).is_false
-            expect(
-                that_assumption(succeeding_assumption).fails()
-            )
+            expect(that_assumption(succeeding_assumption).fails())
 
     def test_succeeds__positive_test(self):
         failing_assumption = that(False).is_false
-        expect(
-            that_assumption(failing_assumption).succeeds()
-        )
+        expect(that_assumption(failing_assumption).succeeds())
 
     def test_succeeds__negative_test(self):
         with negative_test():
             succeeding_assumption = that(True).is_false
-            expect(
-                that_assumption(succeeding_assumption).succeeds()
-            )
+            expect(that_assumption(succeeding_assumption).succeeds())
 
     def test_and_operator_assumption_and_result__negative_test(self):
         with negative_test():
@@ -225,3 +286,17 @@ class BaseAssumptionAssumptionTestCase(unittest.TestCase):
 
     def test_and_operator_none_and_assumption__positive_test(self):
         expect(None & that(True).is_true())
+
+    def test_can_chain_results(self):
+        expect(that(True).is_true().equals(True))
+
+    def test_can_chain_results__negative_test(self):
+        with case("first link fails"):
+            with negative_test():
+                expect(that(True).is_false().equals(True))
+        with case("second link fails"):
+            with negative_test():
+                expect(that(True).is_true().equals(False))
+        with case("both link fails"):
+            with negative_test():
+                expect(that(True).is_false().equals(False))
