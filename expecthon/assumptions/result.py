@@ -38,6 +38,9 @@ class AssumptionResult:
             return AssumptionResult(self.error_messages + other.error_messages)
         return NotImplemented
 
+    def __rand__(self, other: Union["AssumptionResult", None]) -> "AssumptionResult":
+        return self & other
+
 
 class AssumptionResultBuilder:
     """
