@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from .case import case
-from .negative_test import negative_test
 from .assumptions import (
     that,
     that_list,
@@ -13,6 +12,7 @@ from .assumptions import (
     that_number,
 )
 from .expect import expect
+from .expect_errors import expection_that_code_raising, negative_test
 from .meta_assumptions import that_result, that_assumption
 
 __all__ = [
@@ -26,6 +26,7 @@ __all__ = [
     "that_assumption",
     "assuming",
     "failed",
+    "expection_that_code_raising",
     "case",
     "negative_test",
     "success",

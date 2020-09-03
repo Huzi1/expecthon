@@ -51,13 +51,13 @@ class IntGeneratorFactory:
         return type(self)(limit, self._max_value, self._step, self._selector)
 
     def bigger_than(self, limit: int) -> "IntGeneratorFactory":
-        return self.bigger_than_equals(limit+1)
+        return self.bigger_than_equals(limit + 1)
 
     def less_than(self, limit: int) -> "IntGeneratorFactory":
-        return type(self)(self._min_value, limit,  self._step, self._selector)
+        return type(self)(self._min_value, limit, self._step, self._selector)
 
     def less_than_equals(self, limit: int) -> "IntGeneratorFactory":
-        return self.less_than(limit+1)
+        return self.less_than(limit + 1)
 
 
 def integers():
