@@ -1,6 +1,6 @@
 # Expecthon
 
-[![codecov](https://codecov.io/gh/svadilfare/expecthon/branch/master/graph/badge.svg)](https://codecov.io/gh/svadilfare/expecthon) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=alert_status)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=code_smells)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=coverage)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=alert_status)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=code_smells)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
 
 python spec testing framework. This aims to help make tests as readable as
 possible, by composing your tests in natural language. It wraps the builtin
