@@ -34,5 +34,6 @@ setup(
         'Topic :: Software Development :: Testing',
         'Topic :: Utilities',
     ],
+    python_requires='>=3.7',
     packages=find_packages(exclude=("tests", "docs")),
 )
