@@ -6,6 +6,7 @@ from .assumptions import (
     that_list,
     that_string,
     that_function,
+    that_dict,
     assuming,
     failed,
     success,
@@ -15,6 +16,10 @@ from .expect import expect
 from .expect_errors import expection_that_code_raising, negative_test
 from .meta_assumptions import that_result, that_assumption
 
+
+__unittest = True
+
+
 __all__ = [
     "expect",
     "that",
@@ -23,6 +28,7 @@ __all__ = [
     "that_number",
     "that_string",
     "that_result",
+    "that_dict",
     "that_assumption",
     "assuming",
     "failed",

@@ -24,7 +24,7 @@ class AssumptionResultAssumption(BaseAssumption[AssumptionResult]):
     def is_successful(self) -> "AssumptionResultAssumption":
         return self._copy_with_added_result(
             assuming(
-                that(self._value).is_type(AssumptionResult)
+                that(self._value).is_instance_of(AssumptionResult)
                 & that_list(self._value.error_messages).is_empty()
                 & that(self._value.success).is_true()
             ).else_report("Result was not successful")
@@ -33,7 +33,7 @@ class AssumptionResultAssumption(BaseAssumption[AssumptionResult]):
     def is_not_successful(self) -> "AssumptionResultAssumption":
         return self._copy_with_added_result(
             assuming(
-                that(self._value).is_type(AssumptionResult)
+                that(self._value).is_instance_of(AssumptionResult)
                 & that_list(self._value.error_messages).is_not_empty()
                 & that(self._value.success).is_false()
             ).else_report("Result was not unsuccesful")
@@ -78,13 +78,6 @@ class BaseAssumptionAssumption(BaseAssumption[Callable[[], Any]]):
     ) -> "BaseAssumptionAssumption":
         return BaseAssumptionAssumption(
             self._value, assumption_result=new_result & self
-        )
-
-    def succeeds(self) -> "BaseAssumptionAssumption":
-        return self._copy_with_added_result(
-            assuming(self._function_assumption.succeeds()).else_report(
-                "Assumption should have succeeded!"
-            )
         )
 
     def fails(self) -> "BaseAssumptionAssumption":

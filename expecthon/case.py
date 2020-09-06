@@ -25,6 +25,7 @@ def get_testcase(frame) -> TestCase:
         if frame.f_back:
             return get_testcase(frame.f_back)
 
+        # This line cannot be reached by cov as we cannot reach it from a testcase
         raise InvalidCallerException()
 
     return test_case

@@ -11,19 +11,19 @@ import unittest
 from expecthon import (
     case,
     expect,
+    negative_test,
     set_of,
     success,
     that,
     that_assumption,
+    that_dict,
+    that_function,
     that_list,
     that_number,
     that_result,
     that_string,
-    negative_test,
 )
 from expecthon.assumptions import BaseAssumption
-
-from .helpers import failed
 
 
 class BaseAssumptionTestCase(unittest.TestCase):
@@ -32,7 +32,7 @@ class BaseAssumptionTestCase(unittest.TestCase):
     """
 
     def test_that_that_returns_correct_type(self):
-        expect(that(that(None)).is_type(BaseAssumption))
+        expect(that(that(None)).is_instance_of(BaseAssumption))
 
     def test_equals(self):
         for i in set_of.integers():
@@ -67,13 +67,13 @@ class BaseAssumptionTestCase(unittest.TestCase):
         with negative_test():
             expect(that(1).is_not(1))
 
-    def test_is_type(self):
+    def test_is_instance_of(self):
         for i in set_of.integers():
-            expect(that(i).is_type(int))
+            expect(that(i).is_instance_of(int))
 
-    def test_is_type__negative_test(self):
+    def test_is_instance_of__negative_test(self):
         with negative_test():
-            expect(that("5").is_type(int))
+            expect(that("5").is_instance_of(int))
 
     def test_is_true(self):
         expect(that(True).is_true())
@@ -101,6 +101,13 @@ class StringAssumptionTestCase(unittest.TestCase):
     def test_contains__negative_test(self):
         with negative_test():
             expect(that_list("test").contains("ass"))
+
+    def test_caseinsensitive_equals(self):
+        expect(that_string("test").insensitively().equals("TeSt"))
+
+    def test_caseinsensitive_equals__negative_test(self):
+        with negative_test():
+            expect(that_string("test").insensitively().equals("TeSt1"))
 
 
 class NumlberAssumptionTestCase(unittest.TestCase):
@@ -136,13 +143,13 @@ class NumlberAssumptionTestCase(unittest.TestCase):
 
     def test_is_bigger_than(self):
         for i in set_of.few_integers():
-            for j in [integer for integer in set_of.few_integers() if integer > i]:
+            for j in set_of.few_integers().bigger_than(i):
                 expect(that_number(j).is_bigger_than(i))
 
     def test_is_bigger_than__negative_test(self):
         with negative_test():
             for i in set_of.few_integers():
-                for j in [integer for integer in set_of.few_integers() if integer > i]:
+                for j in set_of.few_integers().bigger_than(i):
                     expect(that_number(i).is_bigger_than(j))
 
     def test_is_bigger_than_equals(self):
@@ -194,8 +201,33 @@ class NumlberAssumptionTestCase(unittest.TestCase):
 
 
 class FunctionAssumptionTestCase(unittest.TestCase):
-    ...
-    # TODO
+    def test_fails_with(self):
+        error = TypeError
+
+        expect(that_function(get_function_that_fails_with(error)).fails_with(error))
+
+    def test_fails_with__negative_test(self):
+        with case("No error raised"):
+            with negative_test():
+                expect(that_function(noop_function).fails_with(TypeError))
+        with case("wrong error type"):
+            with negative_test():
+                expect(
+                    that_function(get_function_that_fails_with(ValueError)).fails_with(
+                        TypeError
+                    )
+                )
+
+
+def noop_function():
+    pass
+
+
+def get_function_that_fails_with(error_type):
+    def failing_function():
+        raise error_type
+
+    return failing_function
 
 
 class ListAssumptionTestCase(unittest.TestCase):
@@ -239,64 +271,20 @@ class ListAssumptionTestCase(unittest.TestCase):
         with negative_test():
             expect(that_list([1, 2, 3]).has_any(lambda v: that(v).equals(4)))
 
+    def test_for_all(self):
+        expect(that_list([1, 2, 3]).for_all(lambda v: that_number(v).is_positive()))
 
-class BaseAssumptionAssumptionTestCase(unittest.TestCase):
-    def test_fails__positive_test(self):
-        failing_assumption = that(True).is_false
-        expect(that_assumption(failing_assumption).fails())
-
-    def test_fails__negative_test(self):
+    def test_for_all__negative_test(self):
         with negative_test():
-            succeeding_assumption = that(False).is_false
-            expect(that_assumption(succeeding_assumption).fails())
+            expect(
+                that_list([1, -2, 2, 3]).for_all(lambda v: that_number(v).is_positive())
+            )
 
-    def test_succeeds__positive_test(self):
-        failing_assumption = that(False).is_false
-        expect(that_assumption(failing_assumption).succeeds())
 
-    def test_succeeds__negative_test(self):
+class DictionaryAssumptionTestCase(unittest.TestCase):
+    def test_contains_key(self):
+        expect(that_dict({1: 2, 3: 4}).contains_key(1))
+
+    def test_contains_key__negative_test(self):
         with negative_test():
-            succeeding_assumption = that(True).is_false
-            expect(that_assumption(succeeding_assumption).succeeds())
-
-    def test_and_operator_assumption_and_result__negative_test(self):
-        with negative_test():
-            expect(that(True).is_true() & failed())
-
-    def test_and_operator_assumption_and_result__positive_test(self):
-        expect(that(True).is_true() & success())
-
-    def test_and_operator_result_and_assumption__negative_test(self):
-        with negative_test():
-            expect(failed() & that(True).is_true())
-
-    def test_and_operator_result_and_assumption__positive_test(self):
-        expect(success() & that(True).is_true())
-
-    def test_and_operator_assumption_and_none__negative_test(self):
-        with negative_test():
-            expect(that(False).is_true() & None)
-
-    def test_and_operator_assumption_and_none__positive_test(self):
-        expect(that(True).is_true() & None)
-
-    def test_and_operator_none_and_assumption__negative_test(self):
-        with negative_test():
-            expect(None & that(False).is_true())
-
-    def test_and_operator_none_and_assumption__positive_test(self):
-        expect(None & that(True).is_true())
-
-    def test_can_chain_results(self):
-        expect(that(True).is_true().equals(True))
-
-    def test_can_chain_results__negative_test(self):
-        with case("first link fails"):
-            with negative_test():
-                expect(that(True).is_false().equals(True))
-        with case("second link fails"):
-            with negative_test():
-                expect(that(True).is_true().equals(False))
-        with case("both link fails"):
-            with negative_test():
-                expect(that(True).is_false().equals(False))
+            expect(that_dict({1: 2, "test": 4}).contains_key(2))

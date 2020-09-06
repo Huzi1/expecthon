@@ -41,6 +41,9 @@ class AssumptionResult:
     def __rand__(self, other: Union["AssumptionResult", None]) -> "AssumptionResult":
         return self & other
 
+    def __bool__(self):
+        return self.success
+
 
 class AssumptionResultBuilder:
     """
@@ -49,7 +52,7 @@ class AssumptionResultBuilder:
     Should primarily be used with `assuming`
     """
 
-    def __init__(self, clause: bool):
+    def __init__(self, clause: Union[bool, AssumptionResult]):
         self._clause = clause
 
     def else_report(self, error_message: str) -> AssumptionResult:

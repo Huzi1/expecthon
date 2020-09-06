@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
 from .expect import expect
+from .assumptions import failed
 
-
-def expection_that_code_raising(expected_exception: Exception):
-    return ExpectExceptionRaisedContextManage(expected_exception)
+__unittest = True
 
 
 def negative_test():
@@ -12,7 +11,11 @@ def negative_test():
     return expection_that_code_raising(AssertionError)
 
 
-class ExpectExceptionRaisedContextManage:
+def expection_that_code_raising(expected_exception: Exception):
+    return ExpectExceptionRaisedContextManager(expected_exception)
+
+
+class ExpectExceptionRaisedContextManager:
     def __init__(self, expected_exception: Exception):
         self._expected_exception = expected_exception
 
@@ -23,8 +26,9 @@ class ExpectExceptionRaisedContextManage:
     def __exit__(self, type, value, traceback):
         if type == self._expected_exception:
             return True
-        msg = f"Testcase should have failed with {self._expected_exception}"
         if type is not None:
-            msg += f" - failed with {type} instead."
-
-        expect(failed(msg))
+            return False
+        else:
+            expect(
+                failed(f"Testcase should have failed with {self._expected_exception}")
+            )

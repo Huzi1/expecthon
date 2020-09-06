@@ -4,7 +4,15 @@ Tests the core classes for the underlying system
 """
 import unittest
 
-from expecthon import expect, case, success, assuming, that, that_result
+from expecthon import (
+    expect,
+    case,
+    success,
+    assuming,
+    that,
+    that_result,
+    expection_that_code_raising,
+)
 from expecthon.assumptions import AssumptionResultBuilder
 
 from .helpers import empty, failed
@@ -57,6 +65,13 @@ class AssumptionResultTestCase(unittest.TestCase):
         result = failed() & None
         expect(that_result(result).has_failure_count_of(1))
 
+    def test_and_wrong_type(self):
+        """
+        Test that we can do `A & None`
+        """
+        with expection_that_code_raising(TypeError):
+            result = failed() & "bla"
+
     def test_success(self):
         """
         test the `failed_test` helper function
@@ -89,7 +104,7 @@ class AssumptionResultBuilderTestCase(unittest.TestCase):
 
         error_msg = "fail"
         with case("returns Builder True"):
-            expect(that(assuming(True)).is_type(AssumptionResultBuilder))
+            expect(that(assuming(True)).is_instance_of(AssumptionResultBuilder))
         with case("or_else is empty if clause is True"):
             expect(that_result(assuming(True).else_report(error_msg)).is_successful())
 

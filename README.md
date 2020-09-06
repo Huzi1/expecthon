@@ -1,53 +1,119 @@
 # Expecthon
+
 [![codecov](https://codecov.io/gh/svadilfare/expecthon/branch/master/graph/badge.svg)](https://codecov.io/gh/svadilfare/expecthon) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=alert_status)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=code_smells)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
 
-
 python spec testing framework. This aims to help make tests as readable as
-possible, by composing your tests in natural language.
+possible, by composing your tests in natural language. It wraps the builtin
+unittest module.
+
+## Requirements
+
+Supports \*Python >=3.7
 
 ## Install
 
-TBA
+`pip install expecthon`
 
 ## Examples
+
+Examples range in complexity.
+
+### Simple
 
 A very simple example
 
 ```python
+from expecthon import expect, that
+
 expect(
-   that(5+5).equal(10).and_.is_divisble_by(5)
-   & that(7+4).equal(11).and_.isnt_divisble_by(5)
+   that(5+5).equal(10)
 )
 ```
 
-Lists and enumerators (like the `range` generator), have a whole bunch of
-relevant helper methods, and by creating functions with readable names, it is
-easy to create natural language tests.
+Unlike normal testing you can test multiple things at the same time, making
+debugging more easy, as you don't simply get the first failed assertion, but all
+(if you so choose)
 
 ```python
+from expecthon import expect, that_number
 
-def is_divisble_by(value):
- return lambda element: element % value
-
-def is_less_than(value):
-  return lambda element: element < value
-
+x = 4
 expect(
-   that_list(range(0,10)).and_.any_(is_divisble_by(5)).and_.all_(is_less_than(10))
+ that_number(x).is_negative()
+ & that_number(x).is_divisble_by(3)
 )
 ```
 
+which will raise an failed assertion showing both errors.
 
-## Personal tips
+### Lists
 
-If Django is installed then you can utilize the following bindings:
+Some times you have a large list of elements and you want to test whether one of
+the elements live up to some rule. This can be done the following way:
 
 ```python
-expect(
-   that_response(client.get(reverse('index'))).is_successful().and.contains("Hello World")
-)
+from expecthon import expect, that, that_number, that_list
+
+def value_that_is_positive(value):
+    return that_number(value).is_positive()
+
+expect(that_list([-1, -2, 1, -3]).has_any(value_that_is_positive))
 ```
 
-## extension
+### Negative tests
 
-TBA
+You do, at times, want to test that something is _not_ the case. This has mainly
+been relevant in the context of developing this framework, as you also want to
+provide a so called [negative
+test](https://en.wikipedia.org/wiki/Negative_testing). The framework handles
+this the following way:
+
+```python
+with negative_test():
+  expect(that(1).equals(2))
+```
+
+### Extending the tests
+
+The testing framework is very bare in nature, and it is recommended that you add
+more assumptions that is relevant for you. Here is a short example of extensions:
+
+Here i will provide a short example, given that you have a class:
+
+_person.py_
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Person:
+    first_name: str
+    last_name: str
+    age: int
+```
+
+#### Adding more `Assumptions`
+
+Assumptions are the class that lies behind the `that` function. Please create
+all these in your module in a files called `assumptions.py` (possibly prepending
+context)
+
+```python
+class PersonAssumption(BaseAssumption[Person]):
+    def is_older_than(self, other_person: Person):
+        return self._add_result(
+            assuming(self._value.age > other_person.age).else_report(
+                f"{self._value} is not older than {other_person}"
+            )
+        )
+
+
+def that_person(person: Person):
+    return PersonAssumption(person)
+```
+
+## Roadmap
+
+- Helpers for Django
+- Support function mocking
+- Smart way of passing a `lambda x; that(x).something()` into `has_any` etc

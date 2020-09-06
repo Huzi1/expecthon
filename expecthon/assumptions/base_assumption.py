@@ -9,6 +9,8 @@ from .result import (
 
 T = TypeVar("T")
 
+__unittest = True
+
 
 class BaseAssumption(Generic[T], AssumptionResult, object):
     """
@@ -20,6 +22,7 @@ class BaseAssumption(Generic[T], AssumptionResult, object):
 
     def __init__(self, value: T, assumption_result: Optional[AssumptionResult] = None):
         self._value = value
+
         super().__init__(assumption_result_or_empty(assumption_result).error_messages)
 
     def _add_result(self, new_result: AssumptionResult) -> "BaseAssumption[T]":
@@ -68,7 +71,7 @@ class BaseAssumption(Generic[T], AssumptionResult, object):
             assuming(bool(self._value)).else_report(f"{self._value} should be truthy")
         )
 
-    def is_type(self, expected_type: type) -> "BaseAssumption":
+    def is_instance_of(self, expected_type: type) -> "BaseAssumption":
         return self._add_result(
             assuming(isinstance(self._value, expected_type)).else_report(
                 f"{self._value} is not instance of {expected_type}"
@@ -97,9 +100,7 @@ def not_assuming(
     return AssumptionResultBuilder(not clause)
 
 
-def assuming(
-    clause: Union[bool, AssumptionResult, BaseAssumption]
-) -> AssumptionResultBuilder:
+def assuming(clause: Union[bool, AssumptionResult]) -> AssumptionResultBuilder:
     """
     Returns a builder for AssumptionResults for fluent interfaces.
 
