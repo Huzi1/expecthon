@@ -70,7 +70,7 @@ class AssumptionResultTestCase(unittest.TestCase):
         Test that we can do `A & None`
         """
         with expection_that_code_raising(TypeError):
-            result = failed() & "bla"
+            failed() & "bla"
 
     def test_success(self):
         """

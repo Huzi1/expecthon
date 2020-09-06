@@ -34,8 +34,3 @@ class PersonTestCase(unittest.TestCase):
         bob = Person(first_name="Bob", last_name="Johnson", age=30)
         alice = Person(first_name="Alice", last_name="Tyson", age=25)
         expect(that_person(bob).is_older_than(alice))
-
-    def test_is_older_than(self):
-        bob = Person(first_name="Bob", last_name="Johnson", age=30)
-        alice = Person(first_name="Alice", last_name="Tyson", age=25)
-        expect(that_person(bob).is_older_than(alice))

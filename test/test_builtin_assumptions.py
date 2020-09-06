@@ -220,6 +220,9 @@ class FunctionAssumptionTestCase(unittest.TestCase):
 
 
 def noop_function():
+    """
+    No operation function for testing purposes
+    """
     pass
 
 
