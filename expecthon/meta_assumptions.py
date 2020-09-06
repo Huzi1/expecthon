@@ -88,9 +88,6 @@ class BaseAssumptionAssumption(BaseAssumption[Callable[[], Any]]):
             )
         )
 
-    def with_arguments(self, *args, **kwargs) -> "BaseAssumptionAssumption":
-        return BaseAssumptionAssumption(self._value, args, kwargs, self)
-
 
 def that_assumption(
     assumption: Callable[[], AssumptionResult]
