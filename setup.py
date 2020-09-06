@@ -6,9 +6,6 @@ from setuptools import setup, find_packages
 with open("README.md") as f:
     readme = f.read()
 
-with open("LICENSE") as f:
-    license = f.read()
-
 setup(
     name="expethon",
     version="0.1.0",
@@ -18,7 +15,7 @@ setup(
     author="Casper Weiss Bang",
     author_email="casper@svadilfare.dev",
     url="https://github.com/svadilfare/expecthon",
-    license=license,
+    license="GNU GENERAL PUBLIC LICENSE",
     classifiers=[
         # complete classifier list: http://pypi.python.org/pypi?%3Aaction=list_classifiers
         "Development Status :: 3 - Alpha",
