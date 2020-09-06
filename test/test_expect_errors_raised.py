@@ -58,4 +58,7 @@ class ExpectExceptionRaisedContextManagerTestCase(TestCase):
         with case("No error"):
             with negative_test():
                 with expection_that_code_raising(TypeError):
+                    """
+                    Codeblock raising no errors
+                    """
                     pass
