@@ -7,7 +7,7 @@ with open("README.md") as f:
     readme = f.read()
 
 setup(
-    name="expethon",
+    name="expecthon",
     version="0.1.0",
     description="Simple spec testing framework",
     long_description_content_type="text/markdown",

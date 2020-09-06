@@ -1,4 +1,7 @@
 # Expecthon
+[![Version](https://img.shields.io/pypi/v/expecthon.svg)]
+[![supported-versions](https://img.shields.io/pypi/pyversions/expecthon.svg)]
+
 
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=coverage)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=alert_status)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=code_smells)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
 
