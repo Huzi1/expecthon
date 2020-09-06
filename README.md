@@ -1,6 +1,7 @@
 # Expecthon
-[![Version](https://img.shields.io/pypi/v/expecthon.svg)](https://pypi.org/project/expecthon/)
+[![PyPi - Version](https://img.shields.io/pypi/v/expecthon.svg)](https://pypi.org/project/expecthon/)
 ![supported-versions](https://img.shields.io/pypi/pyversions/expecthon.svg)
+![PyPI - Status](https://img.shields.io/pypi/status/expecthon)
 [![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/expecthon)](https://libraries.io/pypi/expecthon/sourcerank)
 
 
