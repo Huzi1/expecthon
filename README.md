@@ -6,15 +6,15 @@
 
 
 **Main**
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=coverage)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=alert_status)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) 
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=coverage)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=code_smells)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=svadilfare_expecthon&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
 
 
 **Develop**
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=svadilfare_expecthon&metric=coverage)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=svadilfare_expecthon&metric=alert_status)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon) 
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=svadilfare_expecthon&metric=coverage)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=svadilfare_expecthon&metric=code_smells)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?branch=develop&project=svadilfare_expecthon&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=svadilfare_expecthon)
 
