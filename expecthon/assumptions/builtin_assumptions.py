@@ -57,6 +57,7 @@ class ListAssumption(BaseAssumption[List[Any]]):
         )
 
 
+# TODO maybe inherit from StringAssumption
 class CaseInsensitiveStringAssumption(BaseAssumption[str]):
     def __init__(
         self, value: str, assumption_result: Optional[AssumptionResult] = None
@@ -68,15 +69,25 @@ class CaseInsensitiveStringAssumption(BaseAssumption[str]):
 
 
 class StringAssumption(BaseAssumption[str]):
-    def contains(self, expected_value: Any) -> "ListAssumption":
+    def contains(self, expected_value: Any) -> "StringAssumption":
         return self._add_result(
             assuming(expected_value in self._value).else_report(
-                f"{self._value} doesn't contain ´{expected_value}´"
+                f"`{self._value}` doesn't contain `{expected_value}`"
+            )
+        )
+
+    def is_empty(self) -> "StringAssumption":
+        return self._add_result(
+            assuming(len(self._value) == 0).else_report(
+                f"`{self._value}` is not empty"
             )
         )
 
     def insensitively(self) -> CaseInsensitiveStringAssumption:
         return CaseInsensitiveStringAssumption(self._value)
+
+    def lines(self) -> ListAssumption:
+        return ListAssumption(self._value.split("\n"))
 
 
 class NumberAssumption(BaseAssumption[Union[decimal.Decimal, float, int]]):

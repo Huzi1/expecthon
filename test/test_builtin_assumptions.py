@@ -100,7 +100,10 @@ class StringAssumptionTestCase(unittest.TestCase):
 
     def test_contains__negative_test(self):
         with negative_test():
-            expect(that_list("test").contains("ass"))
+            expect(that_string("test").contains("ass"))
+
+    def test_lines(self):
+        expect(that_string("test\n\ntest").lines().has_length(3))
 
     def test_caseinsensitive_equals(self):
         expect(that_string("test").insensitively().equals("TeSt"))
