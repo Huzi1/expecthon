@@ -263,12 +263,26 @@ class ListAssumptionTestCase(unittest.TestCase):
         with negative_test():
             expect(that_list([1]).has_length(2))
 
+    def test_has_same_elements_as(self):
+        expect(that_list([1, 2, 3]).has_same_elements_as([3, 2, 1]))
+
+    def test_has_same_elements_as__negative_test(self):
+        with negative_test():
+            expect(that_list([1, 2, 3]).has_same_elements_as([3, 2]))
+
     def test_contains(self):
         expect(that_list([1, 2, 3]).contains(2))
 
     def test_contains__negative_test(self):
         with negative_test():
             expect(that_list([1, 2, 3]).contains(5))
+
+    def test_contains_all_in(self):
+        expect(that_list([1, 2, 3]).contains_all_in([1, 2]))
+
+    def test_contains_all__negative_test(self):
+        with negative_test():
+            expect(that_list([1, 2, 3]).contains_all_in([1, 5]))
 
     def test_has_any(self):
         expect(that_list([1, 2, 3]).has_any(lambda v: that(v).equals(2)))

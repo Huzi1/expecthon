@@ -10,6 +10,14 @@ __unittest = True
 
 
 class ListAssumption(BaseAssumption[List[Any]]):
+
+    def has_same_elements_as(self, expected_value: List[Any]) -> "ListAssumption":
+        return self._add_result(
+            assuming(sorted(self._value) == sorted(expected_value)).else_report(
+                f"`{self._value}` doesn't have the same elements as `{expected_value}`"
+            )
+        )
+
     def is_empty(self) -> "ListAssumption":
         return self._add_result(
             assuming(that(len(self._value)).equals(0)).else_report(
@@ -32,7 +40,16 @@ class ListAssumption(BaseAssumption[List[Any]]):
     def contains(self, expected_value: Any) -> "ListAssumption":
         return self._add_result(
             assuming(expected_value in self._value).else_report(
-                f"{self._value} doesn't contain ´{expected_value}´"
+                f"`{self._value}` doesn't contain `{expected_value}`"
+            )
+        )
+
+    def contains_all_in(self, expected_values: List[Any]) -> "ListAssumption":
+        failed_values = [
+            expected_value for expected_value in expected_values if expected_value not in self._value]
+        return self._add_result(
+            assuming(not failed_values).else_report(
+                f"`{self._value}` doesn't contain  `{failed_values}`"
             )
         )
 
