@@ -62,6 +62,15 @@ class ListAssumption(BaseAssumption[List[Any]]):
                 any(assumer_func(element).success for element in self._value)
             ).else_report(f"No elements that fulfill the clause was found")
         )
+    def has_no(
+        self, assumer_func: Callable[[Any], AssumptionResult]
+    ) -> "ListAssumption":
+        # TODO find a way to visualize the function
+        return self._add_result(
+            assuming(
+                all(not assumer_func(element).success for element in self._value)
+            ).else_report(f"An element that fulfill the clause was found")
+        )
 
     def for_all(
         self, assumer_func: Callable[[Any], AssumptionResult]
@@ -70,7 +79,7 @@ class ListAssumption(BaseAssumption[List[Any]]):
         return self._add_result(
             assuming(
                 all(assumer_func(element).success for element in self._value)
-            ).else_report(f"No elements that fulfill the clause was found")
+            ).else_report(f"Not all elements fulfilled the clause")
         )
 
 

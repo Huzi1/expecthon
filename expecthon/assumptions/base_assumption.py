@@ -31,6 +31,8 @@ class BaseAssumption(Generic[T], AssumptionResult, object):
     def _copy(self) -> "BaseAssumption[T]":
         return type(self)(self._value, self)
 
+    # TODO should maybe return / use a custom return type that is callable so you can chain them easily
+    # without having a specific predefined value
     def equals(self, expected_value: T) -> "BaseAssumption":
         return self._add_result(
             assuming(self._value == expected_value).else_report(
