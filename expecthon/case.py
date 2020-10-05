@@ -26,6 +26,6 @@ def get_testcase(frame) -> TestCase:
             return get_testcase(frame.f_back)
 
         # This line cannot be reached by cov as we cannot reach it from a testcase
-        raise InvalidCallerException()
+        raise InvalidCallerException()  # pragma: no cover
 
     return test_case
