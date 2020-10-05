@@ -62,6 +62,7 @@ class ListAssumption(BaseAssumption[List[Any]]):
                 any(assumer_func(element).success for element in self._value)
             ).else_report(f"No elements that fulfill the clause was found")
         )
+
     def has_no(
         self, assumer_func: Callable[[Any], AssumptionResult]
     ) -> "ListAssumption":

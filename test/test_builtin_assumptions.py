@@ -102,6 +102,13 @@ class StringAssumptionTestCase(unittest.TestCase):
         with negative_test():
             expect(that_string("test").contains("ass"))
 
+    def test_is_empty(self):
+        expect(that_string("").is_empty())
+
+    def test_is_empty__negative_test(self):
+        with negative_test():
+            expect(that_string("test").is_empty())
+
     def test_lines(self):
         expect(that_string("test\n\ntest").lines().has_length(3))
 
@@ -290,6 +297,13 @@ class ListAssumptionTestCase(unittest.TestCase):
     def test_has_any__negative_test(self):
         with negative_test():
             expect(that_list([1, 2, 3]).has_any(lambda v: that(v).equals(4)))
+
+    def test_has_no(self):
+        expect(that_list([1, 2, 3]).has_no(lambda v: that(v).equals(4)))
+
+    def test_has_no__negative_test(self):
+        with negative_test():
+            expect(that_list([1, 2, 3]).has_no(lambda v: that(v).equals(2)))
 
     def test_for_all(self):
         expect(that_list([1, 2, 3]).for_all(lambda v: that_number(v).is_positive()))
